@@ -25,7 +25,7 @@
   </head>
   <body>
     <header>
-	United States Dynamic Disconnection Map 
+	United States Dynamic Zombie Pathing
 	<img src="" />
         <span id="invalidText" style="color: red; font-style: italic; font-size: 20px;"></span>
     </header>
@@ -191,9 +191,8 @@ window.onload = function() {
 console.log("dearth")
 
 	// Define map-specific items
-	var colorLegend = "United%20States%20"
-	var DirectConnections = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/United%20States%20CSV.csv"
-	var IndirectConnections = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/United%20States%20Indirect%20Connection%20Locations%20CSV.csv"
+	var ZombieConnections = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/United%20States%20Zombie%20Pathing.csv"
+	var TerritoryLocations = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/United%20States%20Pixel%20Locations.csv"
 	var SVG = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/United%20States%20Paths.svg"
 	var BlizzardPattern = blizzardPatternImage.src;
 	// Remember to change the img src, blizzard pattern, and the alt title!!!!!!!!
@@ -209,7 +208,7 @@ console.log("dearth")
 	let tableData;
 	let tableDataClone;
 	Papa.parse(
-	  DirectConnections,
+	  ZombieConnections,
 	  {
 	    download: true,
 	    header: true,
@@ -259,6 +258,15 @@ console.log("dearth")
 	11: "#23002b",
 	12: "#000000"
 	};
+
+      const colors = {
+        "Primary (1)": "black",
+        "Secondary (2)": "#ff0000",
+        "Tertiary (3)": "white",
+        "Quaternary (4)": "#00ff00",
+        "Quinary (5)": "#00ffff",
+        "Senary (6)": "yellow",
+      };
 	
 	// Define csvData as a global variable
 	var csvData;
@@ -277,7 +285,7 @@ console.log("dearth")
 
 	// Load the CSV data
 	Papa.parse(
-	  IndirectConnections,
+	  TerritoryLocations,
 	  {
 	    download: true,
 	    header: true,
@@ -340,353 +348,93 @@ function generateMap() {
   svgElement.querySelectorAll("text").forEach((text) => text.remove());
   // Remove everything contained in the blizzard array
 	// Find rows in table data where column A matches values in blizzardArray
-	const rows = tableData.filter((row) => blizzardArray.includes(row["A"]));
+	const rows = tableData.filter((row) => blizzardArray.includes(row["Territory"]));
 
 	// Remove everything in column B for those rows
 	rows.forEach((row) => {
-	  row["B"] = "";
+	  row["Connections"] = "";
 	});
 
 	// Remove all instances of values in blizzardArray from column B
 	tableData.forEach((row) => {
-	  if (row["B"]) {
+	  if (row["Connections"]) {
 	    // Split the value in column B into an array of values
-	    let values = row["B"].split(",");
+	    let values = row["Connections"].split(",");
 	    // Filter out any values that are included in the blizzardArray
 	    values = values.filter((value) => !blizzardArray.includes(value));
 	    // Join the remaining values back into a string and update the value in column B
-	    row["B"] = values.join(",");
+	    row["Connections"] = values.join(",");
 	  }
 	});
   // Add everything contained in the portal array
 	// Iterate over tableData
 	tableData.forEach((row) => {
 	  // Check if value in column A matches a value in portalArray
-	  if (portalArray.includes(row["A"])) {
+	  if (portalArray.includes(row["Territory"])) {
 	    // Add contents of portalArray to column B
-	    row["B"] = [
+	    row["Connections"] = [
 	      ...new Set([
-		...(row["B"] ? row["B"].split(",") : []),
+		...(row["Connections"] ? row["Connections"].split(",") : []),
 		...portalArray,
 	      ]),
 	    ]
-	      .filter((value) => value !== row["A"])
+	      .filter((value) => value !== row["Territory"])
 	      .join(",");
 	  }
 	});
-  // Recalculate columns L through P for all rows
+  // Create a dictionary to map territory names to pixel locations
+  const locationDict = {};
+  const extraLocationDict = {};
+  csvData.forEach((row) => {
+    locationDict[row["Range"]] = [parseInt(row["Pixel Pair 1"]), parseInt(row["Pixel Pair 2"])];
+    if (row["Extra 1"] && row["Extra 2"] && row["Connection"]) {
+      extraLocationDict[[row["Range"], row["Connection"]]] = [parseInt(row["Extra 1"]), parseInt(row["Extra 2"])];
+    }
+  });
+
+  // Get the SVG element
+  const mapSvgElement = document.querySelector("#map");
+
+  // Function to calculate the points of an arrowhead
+  function arrowhead(start, end) {
+    const angle = Math.atan2(start[1] - end[1], start[0] - end[0]);
+    const x1 = end[0] + 10 * Math.cos(angle + Math.PI / 6);
+    const y1 = end[1] + 10 * Math.sin(angle + Math.PI / 6);
+    const x2 = end[0] + 10 * Math.cos(angle - Math.PI / 6);
+    const y2 = end[1] + 10 * Math.sin(angle - Math.PI / 6);
+    return [[x1, y1], end, [x2, y2]];
+  }
+
+  // Function to calculate a point offset from the start or end point
+  function offsetPoint(start, end, offset) {
+    const angle = Math.atan2(start[1] - end[1], start[0] - end[0]);
+    const x = end[0] + offset * Math.cos(angle);
+    const y = end[1] + offset * Math.sin(angle);
+    return [x, y];
+  }
+
+  // Function to calculate a point offset perpendicular to the line between two points
+  function perpendicularOffsetPoint(point, angle, offset) {
+    const x = point[0] + offset * Math.cos(angle);
+    const y = point[1] + offset * Math.sin(angle);
+    return [x, y];
+  }
+
+  // Count the number of lines between each pair of nodes
+  const lineCounts = {};
   tableData.forEach((row) => {
-    // Column M: vlookup col B values and add them + current value A and B
-    row["M"] = ""; // initialize column M to blank
-    if (row["B"] && row["B"].trim() !== "") {
-      // check if column B is not empty or undefined
-      const searchValues = row["B"].split(",");
-      let searchResults = [];
-      for (const searchValue of searchValues) {
-        const trimmedSearchValue = searchValue.trim().replace(/\u200B/g, "");
-        for (let i = 0; i < tableData.length; i++) {
-          if (tableData[i]["A"] === trimmedSearchValue) {
-            searchResults.push(tableData[i]["B"]);
-            break;
-          }
+    const startLocation = locationDict[row["Territory"]];
+    row["Connections"].split(",").forEach((col, i) => {
+      if (i < Object.keys(colors).length) {
+        const endLocation = locationDict[col];
+        const pair = [row["Territory"], col].sort();
+        if (!lineCounts[pair]) {
+          lineCounts[pair] = 0;
         }
+        lineCounts[pair]++;
       }
-      row["M"] = [row["A"], row["B"], ...searchResults].join(",");
-    }
-
-    // Column N: Remove duplicate values from column M
-    row["N"] = [...new Set(row["M"].split(","))]
-      .filter((value) => value !== row["A"])
-      .join(",");
-	  
-    // Column O: Count how many comma-separated values are in column B
-    if (row["B"] && row["B"].trim() !== "") {
-      // check if column B is not empty or undefined
-      const values = row["B"].split(",");
-      row["O"] = values.length;
-    } else {
-      row["O"] = 0;
-    }
-
-    // Column P: Count how many comma-separated values are in column N (unless it's empty, then set it to 0)
-    if (row["N"] && row["N"].trim() !== "") {
-      // check if column N is not empty or undefined
-      const values = row["N"].split(",");
-      row["P"] = values.length;
-    } else {
-      row["P"] = 0;
-    }
-  });
-
-  // Set font size of indirect connections
-  var fontSizeInput = document.getElementById("fontSizeInput");
-  fontSizeInput.addEventListener("input", function () {
-    if (this.value > 100) {
-      this.value = 100;
-    } else if (this.value < 1) {
-      this.value = 1;
-    }
-  });
-  fontSizeInput.addEventListener("input", function() {
-    debouncedGenerateMap();
-  });
-
-  // Color in the map and add indirect connections
-  paths.forEach(function (path) {
-    var pathId = path.getAttribute("id");
-    for (var i = 0; i < tableData.length; i++) {
-      if (tableData[i]["A"] === pathId) {
-        // Color in the map
-        var value = tableData[i]["O"];
-        if (value >= 12) {
-          value = 12;
-        }
-        if (value !== 0) {
-          var color = colorDictionary[value];
-          var border_color = colorDarktionary[value];
-          path.style.setProperty("fill", color, "important");
-          path.setAttribute("stroke-opacity", "100");
-          path.style.setProperty("stroke", border_color, "important");
-          path.style.setProperty("stroke-width", "2", "important");
-        }
-
-        // Add text to the specified location from CSV data
-        value = tableData[i]["P"];
-        if (value !== 0) {
-          // Find matching row in CSV data
-          var csvRow = csvData.find(function (row) {
-            return row["Range"] === pathId;
-          });
-
-          // Get coordinates from CSV data
-          var x = csvRow["Pixel Pair 1"];
-          var y = csvRow["Pixel Pair 2"];
-
-          var text = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "text"
-          );
-          text.setAttribute("x", x);
-          text.setAttribute("y", y);
-	  text.setAttribute("pointer-events", "none");
-          text.setAttribute("text-anchor", "middle");
-          text.setAttribute("alignment-baseline", "middle");
-          text.setAttribute("font-size", fontSizeInput.value);
-          text.setAttribute("font-weight", "bold");
-	  if (tableData[i]["O"] >= 11) {
-	    text.setAttribute("fill", "white");
-	  } else {
-	    text.setAttribute("fill", "black");
-	  }
-          text.textContent = value;
-
-          // Adjust x and y coordinates to position midpoint of text at specified coordinates
-          var bbox = text.getBBox();
-          text.setAttribute("x", x - bbox.width / 2);
-          text.setAttribute("y", y - bbox.height / 2);
-
-          svgElement.appendChild(text);
-        }
-        break;
-      }
-    }
-  });
-	// Find the maximum value in column O
-	var maxO = Math.max(...tableData.map((row) => row["O"]));
-
-	// Ensure that maxO is never greater than 12
-	if (maxO > 12) {
-	  maxO = 12;
-	}
-	// Get the base image element & define base URL
-	var baseImage = document.getElementById("map");
-	var baseURL = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/";
-
-	// Decide which image to display based on the maximum value in column O
-	baseImage.src = baseURL + colorLegend + maxO + ".png";
-
-// Create a mapping of node names to indices
-let nodeToIndex = {};
-let index = 0;
-tableData.forEach(row => {
-  if (row['A'] && !nodeToIndex.hasOwnProperty(row['A'])) {
-    nodeToIndex[row['A']] = index++;
-  }
-  let neighbors = row['B'] ? row['B'].split(',') : [];
-  neighbors.forEach(neighbor => {
-    if (!nodeToIndex.hasOwnProperty(neighbor)) {
-      nodeToIndex[neighbor] = index++;
-    }
-  });
-});
-
-// Create a distance matrix with dimensions equal to the number of nodes
-let dist = new Array(index);
-for (let i = 0; i < index; i++) {
-  dist[i] = new Array(index);
-  for (let j = 0; j < index; j++) {
-    if (i === j) {
-      dist[i][j] = 0;
-    } else {
-      dist[i][j] = Infinity;
-    }
-  }
-}
-
-// Populate the distance matrix with the distances between directly connected nodes
-tableData.forEach(row => {
-  let x = nodeToIndex[row['A']];
-  let neighbors = row['B'] ? row['B'].split(',') : [];
-  neighbors.forEach(neighbor => {
-    let y = nodeToIndex[neighbor];
-    dist[x][y] = 1;
-    dist[y][x] = 1;
-  });
-});
-
-// Run the Floyd-Warshall algorithm
-for (let k = 0; k < index; k++) {
-  for (let i = 0; i < index; i++) {
-    for (let j = 0; j < index; j++) {
-      if (dist[i][k] + dist[k][j] < dist[i][j]) {
-        dist[i][j] = dist[i][k] + dist[k][j];
-      }
-    }
-  }
-}
-
-// Check if there are any pairs of nodes that are not connected
-let allNodesConnected = true;
-for (let i = 0; i < index; i++) {
-  for (let j = i + 1; j < index; j++) {
-    // Get the node names corresponding to indices i and j
-    let node1 = Object.keys(nodeToIndex).find(key => nodeToIndex[key] === i);
-    let node2 = Object.keys(nodeToIndex).find(key => nodeToIndex[key] === j);
-    // Check if either node is in the blizzardArray
-    if (!blizzardArray.includes(node1) && !blizzardArray.includes(node2)) {
-      // Check if the distance between the nodes is Infinity
-      if (dist[i][j] === Infinity) {
-        allNodesConnected = false;
-        break;
-      }
-    }
-  }
-}
-
-// Create a mapping of node names to indices for tableDataClone
-let nodeToIndexClone = {};
-let indexClone = 0;
-tableDataClone.forEach(row => {
-  if (row['A'] && !nodeToIndexClone.hasOwnProperty(row['A'])) {
-    nodeToIndexClone[row['A']] = indexClone++;
-  }
-  let neighbors = row['B'] ? row['B'].split(',') : [];
-  neighbors.forEach(neighbor => {
-    if (!nodeToIndexClone.hasOwnProperty(neighbor)) {
-      nodeToIndexClone[neighbor] = indexClone++;
-    }
-  });
-});
-
-// Create a distance matrix with dimensions equal to the number of nodes for tableDataClone
-let distClone = new Array(indexClone);
-for (let i = 0; i < indexClone; i++) {
-  distClone[i] = new Array(indexClone);
-  for (let j = 0; j < indexClone; j++) {
-    if (i === j) {
-      distClone[i][j] = 0;
-    } else {
-      distClone[i][j] = Infinity;
-    }
-  }
-}
-
-// Populate the distance matrix with the distances between directly connected nodes for tableDataCloneCopy
-tableDataClone.forEach(row => {
-  let x = nodeToIndexClone[row['A']];
-  let neighbors = row['B'] ? row['B'].split(',') : [];
-  neighbors.forEach(neighbor => {
-    let y = nodeToIndexClone[neighbor];
-    distClone[x][y] = 1;
-    distClone[y][x] = 1;
-  });
-});
-
-// Run the Floyd-Warshall algorithm for tableDataCloneCopy
-for (let k = 0; k < indexClone; k++) {
-  for (let i = 0; i < indexClone; i++) {
-    for (let j = 0; j < indexClone; j++) {
-      if (distClone[i][k] + distClone[k][j] < distClone[i][j]) {
-        distClone[i][j] = distClone[i][k] + distClone[k][j];
-      }
-    }
-  }
-}
-
-// Check if any pair of portal nodes are within 2 travel distance of each other
-let portalsTooClose = false;
-for (let i = 0; i < portalArray.length; i++) {
-  for (let j = i + 1; j < portalArray.length; j++) {
-    // Get the node names corresponding to indices i and j
-    let node1 = portalArray[i];
-    let node2 = portalArray[j];
-    // Get the indices corresponding to the node names
-    let x = nodeToIndexClone[node1];
-    let y = nodeToIndexClone[node2];
-    // Check if the distance between the nodes is less than or equal to 2
-    if (distClone[x][y] <= 2) {
-      portalsTooClose = true;
-      break;
-    }
-  }
-}
-
-  // Check for too-small continents
-  let continentCounts = {};
-  tableData.forEach(row => {
-    if (row['A'] && row['C']) {
-      if (!continentCounts.hasOwnProperty(row['C'])) {
-        continentCounts[row['C']] = 0;
-      }
-      continentCounts[row['C']]++;
-    }
-  });
-  let blizzardContinentCounts = {};
-  blizzardArray.forEach(path => {
-    let row = tableData.find(row => row['A'] === path);
-    if (row && row['C']) {
-      if (!blizzardContinentCounts.hasOwnProperty(row['C'])) {
-        blizzardContinentCounts[row['C']] = 0;
-      }
-      blizzardContinentCounts[row['C']]++;
-    }
-  });
-  let continentTooSmall = false;
-  for (let continent in continentCounts) {
-    if (blizzardContinentCounts.hasOwnProperty(continent) && blizzardContinentCounts[continent] >= continentCounts[continent] - 1) {
-      continentTooSmall = true;
-      break;
-    }
-  }
-  // Update invalid text
-  var invalidText = document.getElementById("invalidText");
-  if (!allNodesConnected && portalsTooClose && continentTooSmall) {
-    invalidText.textContent = "Invalid Generation: Map disconnected; Portals too close; Continent too small";
-  } else if (!allNodesConnected && portalsTooClose) {
-    invalidText.textContent = "Invalid Generation: Map disconnected; Portals too close";
-  } else if (!allNodesConnected && continentTooSmall) {
-    invalidText.textContent = "Invalid Generation: Map disconnected; Continent too small";
-  } else if (portalsTooClose && continentTooSmall) {
-    invalidText.textContent = "Invalid Generation: Portals too close; Continent too small";
-  } else if (!allNodesConnected) {
-    invalidText.textContent = "Invalid Generation: Map is disconnected";
-  } else if (portalsTooClose) {
-    invalidText.textContent = "Invalid Generation: Portals are too close";
-  } else if (continentTooSmall) {
-    invalidText.textContent = "Invalid Generation: Continent too small";
-  } else {
-    invalidText.textContent = "";
-  }
+    });
+  })
 }
 	
 function debounce(func, wait) {
