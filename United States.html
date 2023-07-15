@@ -173,21 +173,17 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("dearth")
+console.log("harpy")
 
 	// Define map-specific items
 	var ZombieConnections = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
-	var IndirectConnections = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/United%20States%20Pixel%20Locations.csv"
+	var TerritoryLocations = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/United%20States%20Pixel%20Locations.csv"
 	var SVG = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/United%20States%20Paths.svg"
 	var BlizzardPattern = blizzardPatternImage.src;
 	// Remember to change the img src, blizzard pattern, and the alt title!!!!!!!!
 
 	var totalBlizzards = 3
-	var totalPortals = 5
-	
 	let blizzardArray = []
-	let portalArray = []
-	let clickedPathsBlizzardsPortals = []
 	
 	// Define connections tableData
 	let tableData;
@@ -231,7 +227,7 @@ console.log("dearth")
 
 	// Load the CSV data
 	Papa.parse(
-	  IndirectConnections,
+	  TerritoryLocations,
 	  {
 	    download: true,
 	    header: true,
@@ -410,7 +406,7 @@ function addBlizzards() {
 	  if (shouldReturn) {
 	    return;
 	  }
-	  if (!clickedPathsBlizzardsPortals.includes(this.id)) {
+	  if (!blizzardArray.includes(this.id)) {
 	    // Change stroke color to white and stroke width to 3
 	    this.style.setProperty("stroke", "white", "important");
 	    this.style.setProperty("stroke-width", "3", "important");
@@ -420,7 +416,7 @@ function addBlizzards() {
 	  if (shouldReturn) {
 	    return;
 	  }
-	  if (!clickedPathsBlizzardsPortals.includes(this.id)) {
+	  if (!blizzardArray.includes(this.id)) {
 	    // Remove stroke color and width
 	    this.style.removeProperty("stroke");
 	    this.style.removeProperty("stroke-width");
@@ -431,7 +427,7 @@ function addBlizzards() {
       return;
     }
     // Check if path is NOT in clickedPathsBlizzardsPortals array
-    if (!clickedPathsBlizzardsPortals.includes(this.id)) {
+    if (!blizzardArray.includes(this.id)) {
 	// Create a clipPath element and set its id
 	var clipPath = document.createElementNS(
 	  "http://www.w3.org/2000/svg",
@@ -475,7 +471,6 @@ function addBlizzards() {
 	    
     // Add clicked path to arrays; push to history
     blizzardArray.push(this.id);
-    clickedPathsBlizzardsPortals.push(this.id);
     history.push({ type: 'addBlizzard', pathId: this.id });
 	    
     // Change the fill of the clicked path to transparent
@@ -566,7 +561,6 @@ function addBlizzards_pathID(pathID) {
 
   // Add clicked path to arrays; push to history
   blizzardArray.push(pathID);
-  clickedPathsBlizzardsPortals.push(pathID);
   
   // Change the fill of the clicked path to transparent
   path.style.setProperty("fill", "transparent", "important");
@@ -594,7 +588,7 @@ function button_AddBlizzards() {
 
 function eraser() {
   // Immediately return if the size of the clickedPathsBlizzardsPortals array is empty
-  if (clickedPathsBlizzardsPortals.length === 0) {
+  if (blizzardArray.length === 0) {
     return;
   }
   let shouldReturn = false;
@@ -626,7 +620,7 @@ function eraser() {
 	  if (shouldReturn) {
 	    return;
 	  }
-	  if (clickedPathsBlizzardsPortals.includes(this.id)) {
+	  if (blizzardArray.includes(this.id)) {
 	    // Change stroke color to #ff1111 and stroke width to 4
 	    this.style.setProperty("stroke", "#ff1111", "important");
 	    this.style.setProperty("stroke-width", "4", "important");
@@ -637,22 +631,20 @@ function eraser() {
 	  if (shouldReturn) {
 	    return;
 	  }
-	  if (clickedPathsBlizzardsPortals.includes(this.id)) {
-	    if (blizzardArray.includes(this.id)) {
+	  if (blizzardArray.includes(this.id)) {
 	      // Change stroke color to white and stroke width to 3
 	      this.style.setProperty("stroke", "white", "important");
 	      this.style.setProperty("stroke-width", "1", "important");
 	    }
-	  }
 	};
   const clickHandler = function () {
     if (shouldReturn) {
       return;
     }
     // Check if path is in clickedPathsBlizzardsPortals array
-    if (clickedPathsBlizzardsPortals.includes(this.id)) {
+    if (blizzardArray.includes(this.id)) {
       // Remove clicked path from clickedPathsBlizzardsPortals array
-      clickedPathsBlizzardsPortals = clickedPathsBlizzardsPortals.filter(
+      blizzardArray = blizzardArray.filter(
         (path) => path !== this.id
       );
 
@@ -674,7 +666,7 @@ function eraser() {
       generateMap();
 
       // Check if clickedPathsBlizzardsPortals array is empty
-      if (clickedPathsBlizzardsPortals.length === 0) {
+      if (blizzardArray.length === 0) {
 	document.getElementById("stopButton").innerHTML = "Stop Editing";
 	// Set the regular background color to white
 	document.getElementById("stopButton").style.backgroundColor = "white";
@@ -739,16 +731,16 @@ function undo() {
       }
 
       // Remove the id of the undone path from the clickedPathsBlizzardsPortals array
-      let index = clickedPathsBlizzardsPortals.indexOf(lastAction.pathId);
+      let index = blizzardArray.indexOf(lastAction.pathId);
       if (index !== -1) {
-        clickedPathsBlizzardsPortals.splice(index, 1);
+        blizzardArray.splice(index, 1);
       }
 	  generateMap();
     } 
       // Remove the id of the undone path from the clickedPathsBlizzardsPortals array
-      let index = clickedPathsBlizzardsPortals.indexOf(lastAction.pathId);
+      let index = blizzardArray.indexOf(lastAction.pathId);
       if (index !== -1) {
-        clickedPathsBlizzardsPortals.splice(index, 1);
+        blizzardArray.splice(index, 1);
       }
 	  generateMap();
     } else if (lastAction.type === 'eraseBlizzard') {
