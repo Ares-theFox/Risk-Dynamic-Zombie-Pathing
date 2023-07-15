@@ -299,22 +299,22 @@ function generateMap() {
   svgElement.querySelectorAll("text").forEach((text) => text.remove());
   // Remove everything contained in the blizzard array
   // Find rows in table data where column A matches values in blizzardArray
-  const rows = tableData.filter((row) => blizzardArray.includes(row["A"]));
+  const rows = tableData.filter((row) => blizzardArray.includes(row["Territory"]));
 
   // Remove everything in column B for those rows
   rows.forEach((row) => {
-    row["B"] = "";
+    row["Connections"] = "";
   });
 
   // Remove all instances of values in blizzardArray from column B
   tableData.forEach((row) => {
-    if (row["B"]) {
+    if (row["Connections"]) {
       // Split the value in column B into an array of values
-      let values = row["B"].split(",");
+      let values = row["Connections"].split(",");
       // Filter out any values that are included in the blizzardArray
       values = values.filter((value) => !blizzardArray.includes(value));
       // Join the remaining values back into a string and update the value in column B
-      row["B"] = values.join(",");
+      row["Connections"] = values.join(",");
     }
   });
 
@@ -370,8 +370,8 @@ function generateMap() {
         lineCounts[pair]++;
       }
     });
-  }
-		    }
+  })
+}
 	  
 function addBlizzards() {
   let shouldReturn = false;
