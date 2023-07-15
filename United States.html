@@ -209,7 +209,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("321")
+console.log("234")
 
 	// Define map-specific items
 	var ZombieConnections = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -446,6 +446,7 @@ function generateMap() {
   tableData.forEach((row) => {
 	  // Check if the "Territory" column of the current row is not empty
 	    if (row["Territory"]) {
+		    console.log("Processing row:", row);
     const startLocation = locationDict[row["Territory"]];
     row["Connections"].split(",").forEach((col, i) => {
       if (i < Object.keys(colors).length) {
