@@ -146,7 +146,7 @@
     />
 
 <!-- Add a new SVG element with a unique id -->
-<svg id="map-svg"></svg>
+<svg id="map-svg" style="pointer-events: none;"></svg>
 
 <!-- Add JavaScript code to set the dimensions of the SVG element -->
 <script>
@@ -209,7 +209,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("latest")
+console.log("321")
 
 	// Define map-specific items
 	var ZombieConnections = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -361,8 +361,6 @@ function stopEditing() {
 	
 // Generate the map
 function generateMap() {
-	console.log(tableData)
-	console.log(tableDataClone)
   // Update buttons
   updateButtonText();
   // Reset tableData to its original values
@@ -461,6 +459,14 @@ function generateMap() {
     });
 	    }
   })
+		console.log("tableData:", tableData);
+		console.log("csvData:", csvData);
+		console.log("locationDict:", locationDict);
+		console.log("extraLocationDict:", extraLocationDict);
+		console.log("lineCounts:", lineCounts);
+		console.log("mapSvgElement:", mapSvgElement);
+		console.log("Number of lines in SVG:", mapSvgElement.querySelectorAll("line").length);
+
 }
 	
 function debounce(func, wait) {
