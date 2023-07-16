@@ -144,27 +144,6 @@
       src="https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/United%20States.PNG"
       alt="United States"
     />
-
-<!-- Add a new SVG element with a unique id -->
-<svg id="map-svg" style="pointer-events: none;"></svg>
-
-<!-- Add JavaScript code to set the dimensions of the SVG element -->
-<script>
-  // Get the img element containing the PNG image
-  const imgElement = document.querySelector("#map");
-
-  // Get the dimensions of the PNG image
-  const imgWidth = imgElement.naturalWidth;
-  const imgHeight = imgElement.naturalHeight;
-
-  // Get the SVG element
-  const mapSvgElement = document.querySelector("#map-svg");
-
-  // Set the dimensions of the SVG element to match the PNG image
-  mapSvgElement.setAttribute("width", imgWidth);
-  mapSvgElement.setAttribute("height", imgHeight);
-</script>
-
     <div id="range"></div>
 	  
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5"></script>
@@ -209,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("432")
+console.log("345")
 
 	// Define map-specific items
 	var ZombieConnections = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -358,7 +337,17 @@ function stopEditing() {
 	document.head.appendChild(styleElement);
 	return;
 }
-	
+
+// Create a canvas element and add it to the page
+const canvas = document.createElement("canvas");
+canvas.id = "myCanvas";
+document.body.appendChild(canvas);
+
+// Set the dimensions of the canvas based on the dimensions of the img element
+const img = document.querySelector("#map");
+canvas.width = img.clientWidth;
+canvas.height = img.clientHeight;
+
 // Generate the map
 function generateMap() {
   // Update buttons
@@ -368,107 +357,59 @@ function generateMap() {
   // Remove existing text elements
   svgElement.querySelectorAll("text").forEach((text) => text.remove());
   // Remove everything contained in the blizzard array
-	// Find rows in table data where column A matches values in blizzardArray
-	const rows = tableData.filter((row) => blizzardArray.includes(row["Territory"]));
+  // Find rows in table data where column A matches values in blizzardArray
+  const rows = tableData.filter((row) => blizzardArray.includes(row["Territory"]));
 
-	// Remove everything in column B for those rows
-	rows.forEach((row) => {
-	  row["Connections"] = "";
-	});
+  // Remove everything in column B for those rows
+  rows.forEach((row) => {
+    row["Connections"] = "";
+  });
 
-	// Remove all instances of values in blizzardArray from column B
-	tableData.forEach((row) => {
-	  if (row["Connections"]) {
-	    // Split the value in column B into an array of values
-	    let values = row["Connections"].split(",");
-	    // Filter out any values that are included in the blizzardArray
-	    values = values.filter((value) => !blizzardArray.includes(value));
-	    // Join the remaining values back into a string and update the value in column B
-	    row["Connections"] = values.join(",");
-	  }
-	});
-  // Add everything contained in the portal array
-	// Iterate over tableData
-	tableData.forEach((row) => {
-	  // Check if value in column A matches a value in portalArray
-	  if (portalArray.includes(row["Territory"])) {
-	    // Add contents of portalArray to column B
-	    row["Connections"] = [
-	      ...new Set([
-		...(row["Connections"] ? row["Connections"].split(",") : []),
-		...portalArray,
-	      ]),
-	    ]
-	      .filter((value) => value !== row["Territory"])
-	      .join(",");
-	  }
-	});
-  // Create a dictionary to map territory names to pixel locations
-  const locationDict = {};
-  const extraLocationDict = {};
-  csvData.forEach((row) => {
-    locationDict[row["Range"]] = [parseInt(row["Pixel Pair 1"]), parseInt(row["Pixel Pair 2"])];
-    if (row["Extra 1"] && row["Extra 2"] && row["Connection"]) {
-      extraLocationDict[[row["Range"], row["Connection"]]] = [parseInt(row["Extra 1"]), parseInt(row["Extra 2"])];
+  // Remove all instances of values in blizzardArray from column B
+  tableData.forEach((row) => {
+    if (row["Connections"]) {
+      // Split the value in column B into an array of values
+      let values = row["Connections"].split(",");
+      // Filter out any values that are included in the blizzardArray
+      values = values.filter((value) => !blizzardArray.includes(value));
+      // Join the remaining values back into a string and update the value in column B
+      row["Connections"] = values.join(",");
     }
   });
 
-  // Get the SVG element
-  const mapSvgElement = document.querySelector("#map-svg");
+  // Get the context of the canvas
+  const ctx = canvas.getContext("2d");
 
-  // Function to calculate the points of an arrowhead
-  function arrowhead(start, end) {
-    const angle = Math.atan2(start[1] - end[1], start[0] - end[0]);
-    const x1 = end[0] + 10 * Math.cos(angle + Math.PI / 6);
-    const y1 = end[1] + 10 * Math.sin(angle + Math.PI / 6);
-    const x2 = end[0] + 10 * Math.cos(angle - Math.PI / 6);
-    const y2 = end[1] + 10 * Math.sin(angle - Math.PI / 6);
-    return [[x1, y1], end, [x2, y2]];
-  }
+  // Set stroke style
+  ctx.strokeStyle = "black";
 
-  // Function to calculate a point offset from the start or end point
-  function offsetPoint(start, end, offset) {
-    const angle = Math.atan2(start[1] - end[1], start[0] - end[0]);
-    const x = end[0] + offset * Math.cos(angle);
-    const y = end[1] + offset * Math.sin(angle);
-    return [x, y];
-  }
-
-  // Function to calculate a point offset perpendicular to the line between two points
-  function perpendicularOffsetPoint(point, angle, offset) {
-    const x = point[0] + offset * Math.cos(angle);
-    const y = point[1] + offset * Math.sin(angle);
-    return [x, y];
-  }
-
-  // Count the number of lines between each pair of nodes
-  const lineCounts = {};
+  // Iterate through tableData
   tableData.forEach((row) => {
-	  // Check if the "Territory" column of the current row is not empty
-	    if (row["Territory"]) {
-    const startLocation = locationDict[row["Territory"]];
-    row["Connections"].split(",").forEach((col, i) => {
-	    console.log("Processing connection:", col)
-      if (i < Object.keys(colors).length) {
-        const endLocation = locationDict[col];
-        const pair = [row["Territory"], col].sort();
-        if (!lineCounts[pair]) {
-          lineCounts[pair] = 0;
-        }
-        lineCounts[pair]++;
-      }
-    });
-	    }
-  })
-		console.log("tableData:", tableData);
-		console.log("csvData:", csvData);
-		console.log("locationDict:", locationDict);
-		console.log("extraLocationDict:", extraLocationDict);
-		console.log("lineCounts:", lineCounts);
-		console.log("mapSvgElement:", mapSvgElement);
-		console.log("Number of lines in SVG:", mapSvgElement.querySelectorAll("line").length);
+    // Get territory and connections
+    const territory = row["Territory"];
+    const connections = row["Connections"].split(",");
 
+    // Find pixel coordinates for territory
+    const territoryData = csvData.find((data) => data["Range"] === territory);
+    const territoryX = territoryData["Pixel Pair 1"];
+    const territoryY = territoryData["Pixel Pair 2"];
+
+    // Iterate through connections
+    connections.forEach((connection) => {
+      // Find pixel coordinates for connection
+      const connectionData = csvData.find((data) => data["Range"] === connection);
+      const connectionX = connectionData["Pixel Pair 1"];
+      const connectionY = connectionData["Pixel Pair 2"];
+
+      // Draw arrow between territory and connection
+      ctx.beginPath();
+      ctx.moveTo(territoryX, territoryY);
+      ctx.lineTo(connectionX, connectionY);
+      ctx.stroke();
+    });
+  });
 }
+
 	
 function debounce(func, wait) {
   let timeout;
