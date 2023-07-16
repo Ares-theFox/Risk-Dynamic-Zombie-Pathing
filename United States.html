@@ -383,9 +383,11 @@ function generateMap() {
   // Set stroke style
   ctx.strokeStyle = "black";
 
-  // Iterate through tableData
+// Iterate through tableData
 	console.log(tableData)
-  tableData.forEach((row) => {
+tableData.forEach((row) => {
+  // Check if both the Territory and Connections columns are not blank
+  if (row["Territory"] && row["Connections"]) {
     // Get territory and connections
     const territory = row["Territory"];
     const connections = row["Connections"].split(",");
@@ -408,7 +410,8 @@ function generateMap() {
       ctx.lineTo(connectionX, connectionY);
       ctx.stroke();
     });
-  });
+  }
+});
 }
 
 	
