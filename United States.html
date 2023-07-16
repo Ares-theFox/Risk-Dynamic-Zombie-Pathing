@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("345")
+console.log("123")
 
 	// Define map-specific items
 	var ZombieConnections = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -384,6 +384,7 @@ function generateMap() {
   ctx.strokeStyle = "black";
 
   // Iterate through tableData
+	console.log(tableData)
   tableData.forEach((row) => {
     // Get territory and connections
     const territory = row["Territory"];
