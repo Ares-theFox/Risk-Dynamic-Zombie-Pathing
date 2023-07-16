@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("321")
+console.log("234")
 
 	// Define map-specific items
 	var ZombieConnections = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -384,7 +384,8 @@ function generateMap() {
   ctx.strokeStyle = "black";
 
 // Iterate through tableData
-	console.log(tableData)
+	console.log("tableData:", tableData);
+	console.log("csvData:", csvData);
 tableData.forEach((row) => {
   // Check if both the Territory and Connections columns are not blank
   if (row["Territory"] && row["Connections"]) {
@@ -396,6 +397,7 @@ tableData.forEach((row) => {
     const territoryData = csvData.find((data) => data["Range"] === territory);
     const territoryX = territoryData["Pixel Pair 1"];
     const territoryY = territoryData["Pixel Pair 2"];
+	console.log(territory, "coordinates:", territoryX, territoryY);
 
     // Iterate through connections
     connections.forEach((connection) => {
@@ -403,6 +405,7 @@ tableData.forEach((row) => {
       const connectionData = csvData.find((data) => data["Range"] === connection);
       const connectionX = connectionData["Pixel Pair 1"];
       const connectionY = connectionData["Pixel Pair 2"];
+	console.log(connection, "coordinates:", connectionX, connectionY);
 
       // Draw arrow between territory and connection
       ctx.beginPath();
