@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("234")
+console.log("123")
 
 	// Define map-specific items
 	var ZombieConnections = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -397,7 +397,7 @@ tableData.forEach((row) => {
     const territoryData = csvData.find((data) => data["Range"] === territory);
     const territoryX = territoryData["Pixel Pair 1"];
     const territoryY = territoryData["Pixel Pair 2"];
-	console.log(territory, "coordinates:", territoryX, territoryY);
+	console.log(territory, "territory coordinates:", territoryX, territoryY);
 
     // Iterate through connections
     connections.forEach((connection) => {
@@ -405,7 +405,7 @@ tableData.forEach((row) => {
       const connectionData = csvData.find((data) => data["Range"] === connection);
       const connectionX = connectionData["Pixel Pair 1"];
       const connectionY = connectionData["Pixel Pair 2"];
-	console.log(connection, "coordinates:", connectionX, connectionY);
+	console.log(connection, "connection coordinates:", connectionX, connectionY);
 
       // Draw arrow between territory and connection
       ctx.beginPath();
