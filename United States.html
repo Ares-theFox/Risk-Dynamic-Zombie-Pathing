@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("234")
+console.log("345")
 
 	// Define map-specific items
 	var ZombiePathing = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -417,189 +417,6 @@ function generateMap() {
       }
     }
   });
-
-// Create a mapping of node names to indices
-let nodeToIndex = {};
-let index = 0;
-tableData.forEach(row => {
-  if (row['Territory'] && !nodeToIndex.hasOwnProperty(row['Territory'])) {
-    nodeToIndex[row['Territory']] = index++;
-  }
-  let neighbors = row['Connections'] ? row['Connections'].split(',') : [];
-  neighbors.forEach(neighbor => {
-    if (!nodeToIndex.hasOwnProperty(neighbor)) {
-      nodeToIndex[neighbor] = index++;
-    }
-  });
-});
-
-// Create a distance matrix with dimensions equal to the number of nodes
-let dist = new Array(index);
-for (let i = 0; i < index; i++) {
-  dist[i] = new Array(index);
-  for (let j = 0; j < index; j++) {
-    if (i === j) {
-      dist[i][j] = 0;
-    } else {
-      dist[i][j] = Infinity;
-    }
-  }
-}
-
-// Populate the distance matrix with the distances between directly connected nodes
-tableData.forEach(row => {
-  let x = nodeToIndex[row['Territory']];
-  let neighbors = row['Connections'] ? row['Connections'].split(',') : [];
-  neighbors.forEach(neighbor => {
-    let y = nodeToIndex[neighbor];
-    dist[x][y] = 1;
-    dist[y][x] = 1;
-  });
-});
-
-// Run the Floyd-Warshall algorithm
-for (let k = 0; k < index; k++) {
-  for (let i = 0; i < index; i++) {
-    for (let j = 0; j < index; j++) {
-      if (dist[i][k] + dist[k][j] < dist[i][j]) {
-        dist[i][j] = dist[i][k] + dist[k][j];
-      }
-    }
-  }
-}
-
-// Check if there are any pairs of nodes that are not connected
-let allNodesConnected = true;
-for (let i = 0; i < index; i++) {
-  for (let j = i + 1; j < index; j++) {
-    // Get the node names corresponding to indices i and j
-    let node1 = Object.keys(nodeToIndex).find(key => nodeToIndex[key] === i);
-    let node2 = Object.keys(nodeToIndex).find(key => nodeToIndex[key] === j);
-    // Check if either node is in the blizzardArray
-    if (!blizzardArray.includes(node1) && !blizzardArray.includes(node2)) {
-      // Check if the distance between the nodes is Infinity
-      if (dist[i][j] === Infinity) {
-        allNodesConnected = false;
-        break;
-      }
-    }
-  }
-}
-
-// Create a mapping of node names to indices for tableDataClone
-let nodeToIndexClone = {};
-let indexClone = 0;
-tableDataClone.forEach(row => {
-  if (row['Territory'] && !nodeToIndexClone.hasOwnProperty(row['Territory'])) {
-    nodeToIndexClone[row['Territory']] = indexClone++;
-  }
-  let neighbors = row['Connections'] ? row['Connections'].split(',') : [];
-  neighbors.forEach(neighbor => {
-    if (!nodeToIndexClone.hasOwnProperty(neighbor)) {
-      nodeToIndexClone[neighbor] = indexClone++;
-    }
-  });
-});
-
-// Create a distance matrix with dimensions equal to the number of nodes for tableDataClone
-let distClone = new Array(indexClone);
-for (let i = 0; i < indexClone; i++) {
-  distClone[i] = new Array(indexClone);
-  for (let j = 0; j < indexClone; j++) {
-    if (i === j) {
-      distClone[i][j] = 0;
-    } else {
-      distClone[i][j] = Infinity;
-    }
-  }
-}
-
-// Populate the distance matrix with the distances between directly connected nodes for tableDataCloneCopy
-tableDataClone.forEach(row => {
-  let x = nodeToIndexClone[row['Territory']];
-  let neighbors = row['Connections'] ? row['Connections'].split(',') : [];
-  neighbors.forEach(neighbor => {
-    let y = nodeToIndexClone[neighbor];
-    distClone[x][y] = 1;
-    distClone[y][x] = 1;
-  });
-});
-
-// Run the Floyd-Warshall algorithm for tableDataCloneCopy
-for (let k = 0; k < indexClone; k++) {
-  for (let i = 0; i < indexClone; i++) {
-    for (let j = 0; j < indexClone; j++) {
-      if (distClone[i][k] + distClone[k][j] < distClone[i][j]) {
-        distClone[i][j] = distClone[i][k] + distClone[k][j];
-      }
-    }
-  }
-}
-
-// Check if any pair of portal nodes are within 2 travel distance of each other
-let portalsTooClose = false;
-for (let i = 0; i < portalArray.length; i++) {
-  for (let j = i + 1; j < portalArray.length; j++) {
-    // Get the node names corresponding to indices i and j
-    let node1 = portalArray[i];
-    let node2 = portalArray[j];
-    // Get the indices corresponding to the node names
-    let x = nodeToIndexClone[node1];
-    let y = nodeToIndexClone[node2];
-    // Check if the distance between the nodes is less than or equal to 2
-    if (distClone[x][y] <= 2) {
-      portalsTooClose = true;
-      break;
-    }
-  }
-}
-
-  // Check for too-small continents
-  let continentCounts = {};
-  tableData.forEach(row => {
-    if (row['Territory'] && row['Connections']) {
-      if (!continentCounts.hasOwnProperty(row['Continent'])) {
-        continentCounts[row['Continent']] = 0;
-      }
-      continentCounts[row['Continent']]++;
-    }
-  });
-  let blizzardContinentCounts = {};
-  blizzardArray.forEach(path => {
-    let row = tableData.find(row => row['Territory'] === path);
-    if (row && row['Continent']) {
-      if (!blizzardContinentCounts.hasOwnProperty(row['Continent'])) {
-        blizzardContinentCounts[row['Continent']] = 0;
-      }
-      blizzardContinentCounts[row['Continent']]++;
-    }
-  });
-  let continentTooSmall = false;
-  for (let continent in continentCounts) {
-    if (blizzardContinentCounts.hasOwnProperty(continent) && blizzardContinentCounts[continent] >= continentCounts[continent] - 1) {
-      continentTooSmall = true;
-      break;
-    }
-  }
-  // Update invalid text
-  var invalidText = document.getElementById("invalidText");
-  if (!allNodesConnected && portalsTooClose && continentTooSmall) {
-    invalidText.textContent = "Invalid Generation: Map disconnected; Portals too close; Continent too small";
-  } else if (!allNodesConnected && portalsTooClose) {
-    invalidText.textContent = "Invalid Generation: Map disconnected; Portals too close";
-  } else if (!allNodesConnected && continentTooSmall) {
-    invalidText.textContent = "Invalid Generation: Map disconnected; Continent too small";
-  } else if (portalsTooClose && continentTooSmall) {
-    invalidText.textContent = "Invalid Generation: Portals too close; Continent too small";
-  } else if (!allNodesConnected) {
-    invalidText.textContent = "Invalid Generation: Map is disconnected";
-  } else if (portalsTooClose) {
-    invalidText.textContent = "Invalid Generation: Portals are too close";
-  } else if (continentTooSmall) {
-    invalidText.textContent = "Invalid Generation: Continent too small";
-  } else {
-    invalidText.textContent = "";
-  }
 }
 	
 function debounce(func, wait) {
@@ -661,16 +478,11 @@ function addBlizzards() {
 	  if (shouldReturn) {
 	    return;
 	  }
-	  if (!clickedPathsBlizzardsPortals.includes(this.id)) {
-	    // Reset stroke color and width according to the color darktionary
-	    let value = tableData.find(row => row['A'] === this.id)['O'];
-	    if (value >= 12) {
-	      value = 12;
-	    }
-	    let border_color = colorDarktionary[value];
-	    this.style.setProperty("stroke", border_color, "important");
-	    this.style.setProperty("stroke-width", "2", "important");
-	  }
+if (!clickedPathsBlizzardsPortals.includes(this.id)) {
+  // Remove stroke and stroke-width properties
+  this.style.removeProperty("stroke");
+  this.style.removeProperty("stroke-width");
+}
 	};
   const clickHandler = function () {
     if (shouldReturn) {
@@ -875,16 +687,11 @@ function addPortals() {
 	  if (shouldReturn) {
 	    return;
 	  }
-	  if (!clickedPathsBlizzardsPortals.includes(this.id)) {
-	    // Reset stroke color and width according to the color darktionary
-	    let value = tableData.find(row => row['A'] === this.id)['O'];
-	    if (value >= 12) {
-	      value = 12;
-	    }
-	    let border_color = colorDarktionary[value];
-	    this.style.setProperty("stroke", border_color, "important");
-	    this.style.setProperty("stroke-width", "2", "important");
-	  }
+if (!clickedPathsBlizzardsPortals.includes(this.id)) {
+  // Remove stroke and stroke-width properties
+  this.style.removeProperty("stroke");
+  this.style.removeProperty("stroke-width");
+}
 	};
   const clickHandler = function () {
     if (shouldReturn) {
@@ -1053,14 +860,9 @@ function eraser() {
 	      this.style.setProperty("stroke", "white", "important");
 	      this.style.setProperty("stroke-width", "1", "important");
 	    } else if (portalArray.includes(this.id)) {
-	      // Reset stroke color and width according to the color darktionary
-	      let value = tableData.find(row => row['A'] === this.id)['O'];
-	      if (value >= 12) {
-		value = 12;
-	      }
-	      let border_color = colorDarktionary[value];
-	      this.style.setProperty("stroke", border_color, "important");
-	      this.style.setProperty("stroke-width", "2", "important");
+	      // Remove stroke and stroke-width properties
+	      this.style.removeProperty("stroke");
+	      this.style.removeProperty("stroke-width");
 	    }
 	  }
 	};
