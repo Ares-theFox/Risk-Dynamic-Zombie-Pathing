@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("123")
+console.log("234")
 
 	// Define map-specific items
 	var ZombiePathing = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -292,6 +292,7 @@ const colorDictionary = {
 // End of global variables
 
 // Load the SVG
+let newSvg;
 let paths;
 let svgElement;
 var xhr = new XMLHttpRequest();
@@ -311,23 +312,26 @@ xhr.onload = function () {
       path.setAttribute("stroke-opacity", "0");
     });
 
-	// Create a new SVG element
-	var newSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-	// Set the width and height of the new SVG element to match the existing SVG element
-	newSvg.setAttribute("width", svgElement.getAttribute("width"));
-	newSvg.setAttribute("height", svgElement.getAttribute("height"));
-	// Set the position of the new SVG element to absolute so that it can be positioned on top of the existing SVG element
-	newSvg.style.position = "absolute";
-	// Set the left and top properties of the new SVG element to match the position of the existing SVG element
-	var rect = svgElement.getBoundingClientRect();
-	newSvg.style.left = rect.left + "px";
-	newSvg.style.top = rect.top + "px";
-	// Set the z-index of the new SVG element to a high value so that it appears on top of other elements
-	newSvg.style.zIndex = 9999;
-	// Set the pointer-events property of the new SVG element to "none" so that it does not capture mouse events
-	newSvg.style.pointerEvents = "none";
-	// Append the new SVG element to the same parent as the existing SVG element
-	svgElement.parentNode.appendChild(newSvg);
+    // Check if the newSvg variable is already defined
+    if (!newSvg) {
+      // Create a new SVG element
+      newSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      // Set the width and height of the new SVG element to match the existing SVG element
+      newSvg.setAttribute("width", svgElement.getAttribute("width"));
+      newSvg.setAttribute("height", svgElement.getAttribute("height"));
+      // Set the position of the new SVG element to absolute so that it can be positioned on top of the existing SVG element
+      newSvg.style.position = "absolute";
+      // Set the left and top properties of the new SVG element to match the position of the existing SVG element
+      var rect = svgElement.getBoundingClientRect();
+      newSvg.style.left = rect.left + "px";
+      newSvg.style.top = rect.top + "px";
+      // Set the z-index of the new SVG element to a high value so that it appears on top of other elements
+      newSvg.style.zIndex = 9999;
+      // Set the pointer-events property of the new SVG element to "none" so that it does not capture mouse events
+      newSvg.style.pointerEvents = "none";
+      // Append the new SVG element to the same parent as the existing SVG element
+      svgElement.parentNode.appendChild(newSvg);
+    }
 
     // Call the onRequestComplete function to indicate that this request has completed
     onRequestComplete();
