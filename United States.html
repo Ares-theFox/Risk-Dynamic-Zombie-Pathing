@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("456")
+console.log("567")
 
 	// Define map-specific items
 	var ZombiePathing = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -483,7 +483,7 @@ function addBlizzards() {
 	  }
 	  if (!clickedPathsBlizzardsPortals.includes(this.id)) {
 	    // Reset stroke color to transparent
-            path.style.setProperty("stroke", "transparent", "important");
+            this.style.setProperty("stroke", "transparent", "important");
 	  }
 	};
   const clickHandler = function () {
@@ -690,7 +690,7 @@ function addPortals() {
 	  }
 if (!clickedPathsBlizzardsPortals.includes(this.id)) {
   // Set stroke to transparent
-        path.style.setProperty("stroke", "transparent", "important");
+        this.style.setProperty("stroke", "transparent", "important");
 }
 	};
   const clickHandler = function () {
