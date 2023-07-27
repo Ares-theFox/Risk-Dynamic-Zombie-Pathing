@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("8675309")
+console.log("123")
 
 	// Define map-specific items
 	var ZombiePathing = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -386,8 +386,8 @@ function generateMap() {
           var priorityRow = priorityData.find(function (row) {
             return row["Territory"] === pathId;
           });
-		var priorityValue = priorityRow["Priority"];
 		console.log(priorityData)
+		var priorityValue = priorityRow["Priority"];
 
           // Get coordinates from CSV data
           var x = pixelRow["Pixel Pair 1"];
