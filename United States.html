@@ -275,6 +275,19 @@ console.log("891")
 	    }
 	  }
 	);
+
+const colorDictionary = {
+    'Primary (1)': '#ff0000',
+    'Secondary (2)': '#18c500',
+    'Tertiary (3)': '#006cff',
+    'Quaternary (4)': 'yellow',
+    'Quinary (5)': 'white',
+    'Senary (6)': 'black',
+    'Septenary (7)': 'black',
+    'Octonary (8)': 'black',
+    'Nonary (9)': 'black',
+    'Denary (10)': 'black'
+}
 	
 // End of global variables
 
@@ -376,6 +389,58 @@ function generateMap() {
     }
   });
 
+  // Draw arrows between territories on the new SVG element using data from pixelData and tableData
+  tableData.forEach(function (row) {
+    var startTerritory = row["Territory"];
+    var connections = row["Connections"].split(",");
+    connections.forEach(function (endTerritory) {
+      var startPixelRow = pixelData.find(function (pixelRow) {
+        return pixelRow["Range"] === startTerritory;
+      });
+      var endPixelRow = pixelData.find(function (pixelRow) {
+        return pixelRow["Range"] === endTerritory;
+      });
+      if (startPixelRow && endPixelRow) {
+        var startX = startPixelRow["Pixel Pair 1"];
+        var startY = startPixelRow["Pixel Pair 2"];
+        var endX = endPixelRow["Pixel Pair 1"];
+        var endY = endPixelRow["Pixel Pair 2"];
+        var line = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "line"
+        );
+      line.setAttribute("x1", startX);
+      line.setAttribute("y1", startY);
+      line.setAttribute("x2", endX);
+      line.setAttribute("y2", endY);
+      // Set the stroke color of the line based on its index in the connections array
+      if (index === 0) {
+        line.setAttribute("stroke", colorDictionary["Primary (1)"]);
+      } else if (index === 1) {
+        line.setAttribute("stroke", colorDictionary["Secondary (2)"]);
+      } else if (index === 2) {
+        line.setAttribute("stroke", colorDictionary["Tertiary (3)"]);
+      } else if (index === 3) {
+        line.setAttribute("stroke", colorDictionary["Quaternary (4)"]);
+      } else if (index === 4) {
+        line.setAttribute("stroke", colorDictionary["Quinary (5)"]);
+      } else if (index === 5) {
+        line.setAttribute("stroke", colorDictionary["Senary (6)"]);
+      } else if (index === 6) {
+        line.setAttribute("stroke", colorDictionary["Septenary (7)"]);
+      } else if (index === 7) {
+        line.setAttribute("stroke", colorDictionary["Octonary (8)"]);
+      } else if (index === 8) {
+        line.setAttribute("stroke", colorDictionary["Nonary (9)"]);
+      } else if (index === 9) {
+        line.setAttribute("stroke", colorDictionary["Denary (10)"]);
+      }
+      line.setAttribute("stroke-width", "2");
+      newSvg.appendChild(line);
+    }
+  });
+});
+	
   // Set font size of indirect connections
   var fontSizeInput = document.getElementById("fontSizeInput");
   fontSizeInput.addEventListener("input", function () {
