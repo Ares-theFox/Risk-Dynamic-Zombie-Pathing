@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("567")
+console.log("678")
 
 	// Define map-specific items
 	var ZombiePathing = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -278,30 +278,43 @@ console.log("567")
 	
 // End of global variables
 
-	// Load the SVG
-	let paths;
-	let svgElement;
-	var xhr = new XMLHttpRequest();
-	xhr.open(
-	  "GET",
-	  SVG
-	);
-	xhr.onload = function () {
-	  if (xhr.status === 200) {
-	    var svg = xhr.responseText;
-	    var rangeElement = document.getElementById("range");
-	    rangeElement.innerHTML = svg;
-	    svgElement = rangeElement.querySelector("svg");
-	    paths = svgElement.querySelectorAll("path");
-	    paths.forEach(function (path) {
-	      path.setAttribute("fill", "transparent");
-	      path.setAttribute("stroke-opacity", "0");
-	    });
-	    // Call the onRequestComplete function to indicate that this request has completed
-	    onRequestComplete();
-	  }
-	};
-	xhr.send();
+// Load the SVG
+let paths;
+let svgElement;
+var xhr = new XMLHttpRequest();
+xhr.open(
+  "GET",
+  SVG
+);
+xhr.onload = function () {
+  if (xhr.status === 200) {
+    var svg = xhr.responseText;
+    var rangeElement = document.getElementById("range");
+    rangeElement.innerHTML = svg;
+    svgElement = rangeElement.querySelector("svg");
+    paths = svgElement.querySelectorAll("path");
+    paths.forEach(function (path) {
+      path.setAttribute("fill", "transparent");
+      path.setAttribute("stroke-opacity", "0");
+    });
+
+    // Create a new SVG element
+    var newSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    // Set the width and height of the new SVG element to match the existing SVG element
+    newSvg.setAttribute("width", svgElement.getAttribute("width"));
+    newSvg.setAttribute("height", svgElement.getAttribute("height"));
+    // Set the position of the new SVG element to absolute so that it can be positioned on top of the existing SVG element
+    newSvg.style.position = "absolute";
+    // Set the z-index of the new SVG element to a high value so that it appears on top of other elements
+    newSvg.style.zIndex = 9999;
+    // Append the new SVG element to the same parent as the existing SVG element
+    svgElement.parentNode.appendChild(newSvg);
+
+    // Call the onRequestComplete function to indicate that this request has completed
+    onRequestComplete();
+  }
+};
+xhr.send();
 
 // Stop editing
 function stopEditing() {
