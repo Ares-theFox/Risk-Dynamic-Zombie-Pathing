@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("912")
+console.log("123")
 
 	// Define map-specific items
 	var ZombiePathing = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -389,26 +389,26 @@ function generateMap() {
     }
   });
 
-  // Draw arrows between territories on the new SVG element using data from pixelData and tableData
-  tableData.forEach(function (row) {
-    var startTerritory = row["Territory"];
-    var connections = row["Connections"].split(",");
-    connections.forEach(function (endTerritory) {
-      var startPixelRow = pixelData.find(function (pixelRow) {
-        return pixelRow["Range"] === startTerritory;
-      });
-      var endPixelRow = pixelData.find(function (pixelRow) {
-        return pixelRow["Range"] === endTerritory;
-      });
-      if (startPixelRow && endPixelRow) {
-        var startX = startPixelRow["Pixel Pair 1"];
-        var startY = startPixelRow["Pixel Pair 2"];
-        var endX = endPixelRow["Pixel Pair 1"];
-        var endY = endPixelRow["Pixel Pair 2"];
-        var line = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "line"
-        );
+// Draw arrows between territories on the new SVG element using data from pixelData and tableData
+tableData.forEach(function (row) {
+  var startTerritory = row["Territory"];
+  var connections = row["Connections"].split(",");
+  connections.forEach(function (endTerritory, index) {
+    var startPixelRow = pixelData.find(function (pixelRow) {
+      return pixelRow["Range"] === startTerritory;
+    });
+    var endPixelRow = pixelData.find(function (pixelRow) {
+      return pixelRow["Range"] === endTerritory;
+    });
+    if (startPixelRow && endPixelRow) {
+      var startX = startPixelRow["Pixel Pair 1"];
+      var startY = startPixelRow["Pixel Pair 2"];
+      var endX = endPixelRow["Pixel Pair 1"];
+      var endY = endPixelRow["Pixel Pair 2"];
+      var line = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "line"
+      );
       line.setAttribute("x1", startX);
       line.setAttribute("y1", startY);
       line.setAttribute("x2", endX);
