@@ -386,8 +386,7 @@ function generateMap() {
           var priorityRow = priorityData.find(function (row) {
             return row["Territory"] === pathId;
           });
-		console.log(priorityData)
-		var priorityValue = priorityRow["Priority"];
+	  var priorityValue = priorityRow["Priority"];
 
           // Get coordinates from CSV data
           var x = pixelRow["Pixel Pair 1"];
@@ -911,7 +910,7 @@ function addPortals() {
 	var pathId = this.id;
 
 	// Find matching row in CSV data
-	var csvRow = csvData.find(function (row) {
+	var csvRow = pixelData.find(function (row) {
 	  return row["Range"] === pathId;
 	});
 
@@ -1158,7 +1157,7 @@ function addPortals_pathID(pathID) {
   var clickedPathId = pathID;
 
   // Find matching row in CSV data
-  var csvRow = csvData.find(function (row) {
+  var csvRow = pixelData.find(function (row) {
     return row["Range"] === clickedPathId;
   });
 
