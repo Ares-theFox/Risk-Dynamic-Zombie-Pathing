@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("789")
+console.log("891")
 
 	// Define map-specific items
 	var ZombiePathing = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -311,6 +311,8 @@ xhr.onload = function () {
 	newSvg.style.top = rect.top + "px";
 	// Set the z-index of the new SVG element to a high value so that it appears on top of other elements
 	newSvg.style.zIndex = 9999;
+	// Set the pointer-events property of the new SVG element to "none" so that it does not capture mouse events
+	newSvg.style.pointerEvents = "none";
 	// Append the new SVG element to the same parent as the existing SVG element
 	svgElement.parentNode.appendChild(newSvg);
 
