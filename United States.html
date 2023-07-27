@@ -345,6 +345,8 @@ function generateMap() {
 	  }
 	});
 
+  // Recalculate columns L through P for all rows
+  tableData.forEach((row) => { 
     // Column O: Count how many comma-separated values are in column B
     if (row["Connections"] && row["Connections"].trim() !== "") {
       // check if column B is not empty or undefined
@@ -353,6 +355,7 @@ function generateMap() {
     } else {
       row["O"] = 0;
     }
+  });
 
   // Set font size of indirect connections
   var fontSizeInput = document.getElementById("fontSizeInput");
