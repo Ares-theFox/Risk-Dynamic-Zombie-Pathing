@@ -184,7 +184,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("3434343434")
+console.log("asfdsadf")
 
 	// Define map-specific items
 	var ZombieFile = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20File.csv"
@@ -320,11 +320,12 @@ function stopEditing() {
 
 
 	
-	
 // Generate the map
 function generateMap() {
   // Update buttons
   updateButtonText();
+  let rangeElement = document.getElementById("range");
+  rangeElement.querySelectorAll("path[marker-end]").forEach((path) => path.remove());
   // Reset tableData to its original values
   tableData = JSON.parse(JSON.stringify(tableDataClone));
   // Remove everything contained in the blizzard array
@@ -503,7 +504,6 @@ tableData.forEach((row) => {
   }
 });
 
-
 // Add the newSVG to the range element
 rangeElement.appendChild(newSVG);
 
@@ -511,7 +511,8 @@ rangeElement.appendChild(newSVG);
 rangeElement.removeChild(svgElement);
 rangeElement.appendChild(svgElement);
 }
-  
+
+generateMap();
 	
 function debounce(func, wait) {
   let timeout;
