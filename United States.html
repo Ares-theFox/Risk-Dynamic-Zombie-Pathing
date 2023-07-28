@@ -186,7 +186,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("asdfasdf")
+console.log("1234")
 
 	// Define map-specific items
 	var ZombieFile = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20File.csv"
@@ -278,24 +278,6 @@ xhr.onload = function () {
     
     // Add the newSVG to the range element
     rangeElement.appendChild(newSVG);
-
-    // Define marker for arrowhead
-    let marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
-    marker.setAttribute("id", "arrow");
-    marker.setAttribute("markerWidth", "4");
-    marker.setAttribute("markerHeight", "4");
-    marker.setAttribute("refX", "0");
-    marker.setAttribute("refY", "3");
-    marker.setAttribute("orient", "auto");
-    marker.setAttribute("markerUnits", "strokeWidth");
-
-    // Create path for arrowhead
-    let arrowPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    arrowPath.setAttribute("d", "M0,0 L0,6 L9,3 z");
-
-    // Append arrowPath to marker and marker to newSVG
-    marker.appendChild(arrowPath);
-    newSVG.appendChild(marker);
   }
 };
 xhr.send();
@@ -393,6 +375,26 @@ tableData.forEach((row) => {
         lineCounts[pair] = 0;
       }
       lineCounts[pair]++;
+      
+      // Define marker for arrowhead after j is defined
+      let marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+      marker.setAttribute("id", "arrow");
+      marker.setAttribute("markerWidth", "4");
+      marker.setAttribute("markerHeight", "4");
+      marker.setAttribute("refX", "0");
+      marker.setAttribute("refY", "3");
+      marker.setAttribute("orient", "auto");
+      marker.setAttribute("markerUnits", "strokeWidth");
+
+      // Create path for arrowhead
+      let arrowPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      arrowPath.setAttribute("d", "M0,0 L0,6 L9,3 z");
+      arrowPath.setAttribute("fill", colorDictionary[j + 1]); // Set fill attribute to color from color dictionary
+      arrowPath.setAttribute("stroke", colorDictionary[j + 1]); // Set stroke attribute to color from color dictionary
+
+      // Append arrowPath to marker and marker to newSVG
+      marker.appendChild(arrowPath);
+      newSVG.appendChild(marker);
     });
   }
 });
@@ -495,19 +497,18 @@ arrowPath.setAttribute("stroke-width", "3");
 arrowPath.setAttribute("marker-end", "url(#arrow)");
 arrowPath.setAttribute("fill", colorDictionary[j + 1]); // Set fill attribute to color from color dictionary
 
-	  
-	    // Append the arrow path to the newSVG
-	    newSVG.appendChild(arrowPath);
-	  
-	    // Add the new line to the drawnLines dictionary
-	    drawnLines[pair] = {
-	      start: offsetStartLocation,
-	      end: offsetEndLocation,
-	      color: colorDictionary[j + 1],
-	    };
-	  }
-    });
-  }
+// Append the arrow path to the newSVG
+newSVG.appendChild(arrowPath);
+
+// Add the new line to the drawnLines dictionary
+drawnLines[pair] = {
+  start: offsetStartLocation,
+  end: offsetEndLocation,
+  color: colorDictionary[j + 1],
+};
+}
+});
+}
 });
 
 // Add the newSVG to the range element
@@ -517,6 +518,8 @@ rangeElement.appendChild(newSVG);
 rangeElement.removeChild(svgElement);
 rangeElement.appendChild(svgElement);
 }
+
+		  
 	
 function debounce(func, wait) {
   let timeout;
