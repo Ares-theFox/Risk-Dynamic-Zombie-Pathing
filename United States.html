@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("981532")
+console.log("123412")
 
 	// Define map-specific items
 	var ZombiePathing = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -421,11 +421,11 @@ tableData.forEach((row) => {
 const lineIndex = {};
 tableData.forEach((row) => {
   if (row["Connections"]) {
-    const startLocation = locationDict[row["Territory"]];
+    const startLocation = locationData[row["Range"]];
     const connections = row["Connections"].split(",");
     connections.forEach((connection, index) => {
-      const endLocation = locationDict[connection];
-      const pair = [row["Territory"], connection].sort();
+      const endLocation = locationData[connection];
+      const pair = [row["Range"], connection].sort();
       if (!lineIndex[pair]) {
         lineIndex[pair] = 0;
       }
@@ -451,6 +451,10 @@ tableData.forEach((row) => {
         endLocation[0] + indexOffset * Math.cos(angle),
         endLocation[1] + indexOffset * Math.sin(angle),
       ];
+
+      // Log the values of offsetStartLocation and offsetEndLocation
+      console.log(`offsetStartLocation: ${offsetStartLocation}`);
+      console.log(`offsetEndLocation: ${offsetEndLocation}`);
 
       // Create a new SVG path element for the arrow
       const path = document.createElementNS(
