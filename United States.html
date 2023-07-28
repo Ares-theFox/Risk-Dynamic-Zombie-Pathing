@@ -482,19 +482,19 @@ tableData.forEach(function (row) {
           arrowPath.setAttribute("fill", colorDictionary["Denary (10)"]);
         }
 
-       # Append the arrowPath to the marker
+       // Append the arrowPath to the marker
        marker.appendChild(arrowPath);
 
-       # Append the marker to the newSvg element
+       // Append the marker to the newSvg element
        newSvg.appendChild(marker);
 
-       # Create a path element for the line with an arrowhead
+       // Create a path element for the line with an arrowhead
        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
        path.setAttribute("d", `M${newStartX},${newStartY} L${newEndX},${newEndY}`);
        path.setAttribute("stroke-width", "2");
        path.setAttribute("marker-end", `url(#arrow-${index})`);
 
-       # Set the stroke color of the path based on its index in the connections array
+       // Set the stroke color of the path based on its index in the connections array
        if (index === 0) {
          path.setAttribute("stroke", colorDictionary["Primary (1)"]);
        } else if (index === 1) {
