@@ -186,7 +186,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("23412341234123412341234")
+console.log("asdfasdf")
 
 	// Define map-specific items
 	var ZombieFile = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20File.csv"
@@ -282,8 +282,8 @@ xhr.onload = function () {
     // Define marker for arrowhead
     let marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
     marker.setAttribute("id", "arrow");
-    marker.setAttribute("markerWidth", "7");
-    marker.setAttribute("markerHeight", "7");
+    marker.setAttribute("markerWidth", "4");
+    marker.setAttribute("markerHeight", "4");
     marker.setAttribute("refX", "0");
     marker.setAttribute("refY", "3");
     marker.setAttribute("orient", "auto");
@@ -481,18 +481,20 @@ let offsetEndLocation = perpendicularOffsetPoint(
   indexOffset
 );
   
-	    // Create a new path element for the arrow
-	    let arrowPath = document.createElementNS(
-	      "http://www.w3.org/2000/svg",
-	      "path"
-	    );
-	    arrowPath.setAttribute(
-	      "d",
-	      `M${offsetStartLocation[0]},${offsetStartLocation[1]} L${offsetEndLocation[0]},${offsetEndLocation[1]}`
-	    );
-	    arrowPath.setAttribute("stroke", colorDictionary[j + 1]);
-	    arrowPath.setAttribute("stroke-width", "3");
-	    arrowPath.setAttribute("marker-end", "url(#arrow)");
+// Create a new path element for the arrow
+let arrowPath = document.createElementNS(
+  "http://www.w3.org/2000/svg",
+  "path"
+);
+arrowPath.setAttribute(
+  "d",
+  `M${offsetStartLocation[0]},${offsetStartLocation[1]} L${offsetEndLocation[0]},${offsetEndLocation[1]}`
+);
+arrowPath.setAttribute("stroke", colorDictionary[j + 1]);
+arrowPath.setAttribute("stroke-width", "3");
+arrowPath.setAttribute("marker-end", "url(#arrow)");
+arrowPath.setAttribute("fill", colorDictionary[j + 1]); // Set fill attribute to color from color dictionary
+
 	  
 	    // Append the arrow path to the newSVG
 	    newSVG.appendChild(arrowPath);
