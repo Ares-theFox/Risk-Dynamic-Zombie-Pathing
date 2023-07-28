@@ -295,15 +295,12 @@ const colorDictionary = {
 let newSvg;
 let paths;
 let svgElement;
-var xhr = new XMLHttpRequest();
-xhr.open(
-  "GET",
-  SVG
-);
+const xhr = new XMLHttpRequest();
+xhr.open("GET", SVG);
 xhr.onload = function () {
   if (xhr.status === 200) {
-    var svg = xhr.responseText;
-    var rangeElement = document.getElementById("range");
+    const svg = xhr.responseText;
+    const rangeElement = document.getElementById("range");
     rangeElement.innerHTML = svg;
     svgElement = rangeElement.querySelector("svg");
     paths = svgElement.querySelectorAll("path");
@@ -321,19 +318,36 @@ xhr.onload = function () {
       newSvg.setAttribute("height", svgElement.getAttribute("height"));
       // Set the position of the new SVG element to absolute so that it can be positioned on top of the existing SVG element
       newSvg.style.position = "absolute";
-// Get a reference to the img element
-const imgElement = document.getElementById("map");
-// Get the position of the img element relative to the viewport
-const rect = imgElement.getBoundingClientRect();
-// Set the left and top properties of the new SVG element to match the position of the img element, accounting for the offset
-newSvg.style.left = (rect.left - 8) + "px";
-newSvg.style.top = (rect.top - 116) + "px";
+      // Get a reference to the img element
+      const imgElement = document.getElementById("map");
+      // Get the position of the img element relative to the viewport
+      const rect = imgElement.getBoundingClientRect();
+      // Set the left and top properties of the new SVG element to match the position of the img element, accounting for the offset
+      newSvg.style.left = (rect.left - 8) + "px";
+      newSvg.style.top = (rect.top - 116) + "px";
       // Set the z-index of the new SVG element to a high value so that it appears on top of other elements
       newSvg.style.zIndex = 9999;
       // Set the pointer-events property of the new SVG element to "none" so that it does not capture mouse events
       newSvg.style.pointerEvents = "none";
-      // Append the new SVG element to the same parent as the existing SVG element
-      svgElement.parentNode.appendChild(newSvg);
+      
+      // Define an arrowhead marker in the SVG element
+      const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+      const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+      marker.setAttribute("id", "arrow");
+      marker.setAttribute("markerWidth", "10");
+      marker.setAttribute("markerHeight", "10");
+      marker.setAttribute("refX", "9");
+      marker.setAttribute("refY", "3");
+      marker.setAttribute("orient", "auto");
+      marker.setAttribute("markerUnits", "strokeWidth");
+
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", "M0,0 L0,6 L9,3 z");
+      path.setAttribute("fill", "#f00");
+
+      marker.appendChild(path);
+      defs.appendChild(marker);
+
     }
 
     // Call the onRequestComplete function to indicate that this request has completed
@@ -438,6 +452,8 @@ tableData.forEach(function (row) {
         } else if (index === 9) {
           line.setAttribute("stroke", colorDictionary["Denary (10)"]);
         }
+        // Add an arrowhead at the end of the line
+        line.setAttribute("marker-end", "url(#arrow)");
         line.setAttribute("stroke-width", "2");
         newSvg.appendChild(line);
       }
