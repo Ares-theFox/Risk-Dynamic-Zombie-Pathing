@@ -421,10 +421,10 @@ tableData.forEach((row) => {
 const lineIndex = {};
 tableData.forEach((row) => {
   if (row["Connections"]) {
-    const startLocation = locationData[row["Range"]];
+    const startLocation = pixelData[row["Range"]];
     const connections = row["Connections"].split(",");
     connections.forEach((connection, index) => {
-      const endLocation = locationData[connection];
+      const endLocation = pixelData[connection];
       const pair = [row["Range"], connection].sort();
       if (!lineIndex[pair]) {
         lineIndex[pair] = 0;
