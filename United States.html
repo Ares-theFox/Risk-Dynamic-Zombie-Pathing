@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("567")
+console.log("678")
 
 	// Define map-specific items
 	var ZombiePathing = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -321,10 +321,13 @@ xhr.onload = function () {
       newSvg.setAttribute("height", svgElement.getAttribute("height"));
       // Set the position of the new SVG element to absolute so that it can be positioned on top of the existing SVG element
       newSvg.style.position = "absolute";
-      // Set the left and top properties of the new SVG element to match the position of the existing SVG element
-      var rect = svgElement.getBoundingClientRect();
-      newSvg.style.left = rect.left + "px";
-      newSvg.style.top = rect.top + "px";
+// Get a reference to the img element
+const imgElement = document.getElementById("map");
+// Get the position of the img element relative to the viewport
+const rect = imgElement.getBoundingClientRect();
+// Set the left and top properties of the new SVG element to match the position of the img element
+newSvg.style.left = rect.left + "px";
+newSvg.style.top = rect.top + "px";
       // Set the z-index of the new SVG element to a high value so that it appears on top of other elements
       newSvg.style.zIndex = 9999;
       // Set the pointer-events property of the new SVG element to "none" so that it does not capture mouse events
