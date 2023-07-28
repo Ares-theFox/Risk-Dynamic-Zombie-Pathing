@@ -184,7 +184,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("asdf")
+console.log("1234")
 
 	// Define map-specific items
 	var ZombieFile = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20File.csv"
@@ -258,8 +258,6 @@ console.log("asdf")
 	      path.setAttribute("fill", "transparent");
 	      path.setAttribute("stroke-opacity", "0");
 	    });
-	    // Call the onRequestComplete function to indicate that this request has completed
-	    onRequestComplete();
 	  }
 	};
 	xhr.send();
@@ -276,90 +274,221 @@ function stopEditing() {
 	document.head.appendChild(styleElement);
 	return;
 }
+
+
+
+
 	
-// Create a new SVG element for drawing arrows
-let arrowSvgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-arrowSvgElement.setAttribute("width", svgElement.getAttribute("width"));
-arrowSvgElement.setAttribute("height", svgElement.getAttribute("height"));
-arrowSvgElement.setAttribute("viewBox", svgElement.getAttribute("viewBox"));
-document.getElementById("range").appendChild(arrowSvgElement);
+// Define new SVG as a global variable
+let newSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+newSVG.setAttribute("width", svgElement.getAttribute("width"));
+newSVG.setAttribute("height", svgElement.getAttribute("height"));
+newSVG.setAttribute("viewBox", svgElement.getAttribute("viewBox"));
 
-// Function to calculate the points of an arrowhead
-function arrowhead(start, end) {
-  let angle = Math.atan2(start[1] - end[1], start[0] - end[0]);
-  let x1 = end[0] + 10 * Math.cos(angle + Math.PI / 6);
-  let y1 = end[1] + 10 * Math.sin(angle + Math.PI / 6);
-  let x2 = end[0] + 10 * Math.cos(angle - Math.PI / 6);
-  let y2 = end[1] + 10 * Math.sin(angle - Math.PI / 6);
-  return [x1, y1, end[0], end[1], x2, y2];
-}
+// Define marker for arrowhead
+let marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+marker.setAttribute("id", "arrow");
+marker.setAttribute("markerWidth", "10");
+marker.setAttribute("markerHeight", "10");
+marker.setAttribute("refX", "0");
+marker.setAttribute("refY", "3");
+marker.setAttribute("orient", "auto");
+marker.setAttribute("markerUnits", "strokeWidth");
 
-// Function to draw an arrow between two points
-function drawArrow(start, end, color) {
-  // Create a new path element
-  let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  // Set the path data attribute to draw a line between the start and end points
-  path.setAttribute("d", `M ${start[0]} ${start[1]} L ${end[0]} ${end[1]}`);
-  // Set the stroke color and width
-  path.setAttribute("stroke", color);
-  path.setAttribute("stroke-width", "3");
-  // Add the path to the arrow SVG element
-  arrowSvgElement.appendChild(path);
+// Create path for arrowhead
+let arrowPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+arrowPath.setAttribute("d", "M0,0 L0,6 L9,3 z");
+arrowPath.setAttribute("fill", "#f00");
 
-  // Create a new polygon element for the arrowhead
-  let polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-  // Set the points attribute to draw an arrowhead at the end point
-  polygon.setAttribute("points", arrowhead(start, end).join(","));
-  // Set the fill color
-  polygon.setAttribute("fill", color);
-  // Add the polygon to the arrow SVG element
-  arrowSvgElement.appendChild(polygon);
-}
+// Append arrowPath to marker and marker to newSVG
+marker.appendChild(arrowPath);
+newSVG.appendChild(marker);
 
+
+	
 // Generate the map
 function generateMap() {
-    // Update buttons
-    updateButtonText();
-    // Reset tableData to its original values
-    tableData = JSON.parse(JSON.stringify(tableDataClone));
+  // Update buttons
+  updateButtonText();
+  // Reset tableData to its original values
+  tableData = JSON.parse(JSON.stringify(tableDataClone));
+  // Remove everything contained in the blizzard array
+	// Find rows in table data where column A matches values in blizzardArray
+	const rows = tableData.filter((row) => blizzardArray.includes(row["Territory"]));
 
-    // Clear any existing arrows from the arrow SVG element
-    while (arrowSvgElement.firstChild) {
-        arrowSvgElement.removeChild(arrowSvgElement.firstChild);
-    }
+	// Remove everything in column B for those rows
+	rows.forEach((row) => {
+	  row["Connections"] = "";
+	});
 
-    // Draw arrows between territories based on their connections
-    for (let i = 0; i < tableData.length; i++) {
-        let territory = tableData[i]["Territory"];
-        let connections = tableData[i]["Connections"].split(", ");
-        let startLocation = [tableData[i]["Pixel Pair 1"], tableData[i]["Pixel Pair 2"]];
-        for (let j = 0; j < connections.length; j++) {
-            let connection = connections[j];
-            let endLocation = location_dict[connection];
-            drawArrow(startLocation, endLocation, colorDictionary[j + 1]);
-        }
+	// Remove all instances of values in blizzardArray from column B
+	tableData.forEach((row) => {
+	  if (row["Connections"]) {
+	    // Split the value in column B into an array of values
+	    let values = row["Connections"].split(",");
+	    // Filter out any values that are included in the blizzardArray
+	    values = values.filter((value) => !blizzardArray.includes(value));
+	    // Join the remaining values back into a string and update the value in column B
+	    row["Connections"] = values.join(",");
+	  }
+	});
+  // Calculate O
+  tableData.forEach((row) => {	  
+    if (row["Connections"] && row["Connections"].trim() !== "") {
+      // check if column B is not empty or undefined
+      const values = row["Connections"].split(",");
+      row["O"] = values.length;
+    } else {
+      row["O"] = 0;
     }
+  }
+// Calculate offsets
+let locationDict = {};
+let extraLocationDict = {};
+tableData.forEach((row) => {
+  locationDict[row["Territory"]] = [
+    parseInt(row["Pixel Pair 1"]),
+    parseInt(row["Pixel Pair 2"]),
+  ];
+  if (
+    row["Extra 1"] &&
+    row["Extra 2"] &&
+    row["Connection"]
+  ) {
+    extraLocationDict[[row["Territory"], row["Connection"]]] = [
+      parseInt(row["Extra 1"]),
+      parseInt(row["Extra 2"]),
+    ];
+  }
+});
 
-    // Add text labels to the center of each territory
-    for (let i = 0; i < tableData.length; i++) {
-        let territory = tableData[i]["Territory"];
-        let priority = tableData[i]["Priority"];
-        let x = tableData[i]["Pixel Pair 1"];
-        let y = tableData[i]["Pixel Pair 2"];
-        let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute("x", x);
-        text.setAttribute("y", y);
-        text.setAttribute("text-anchor", "middle");
-        text.setAttribute("dominant-baseline", "central");
-        text.setAttribute("font-size", "16px");
-        text.textContent = priority;
-        arrowSvgElement.appendChild(text);
+// Count the number of lines between each pair of nodes
+let lineCounts = {};
+tableData.forEach((row) => {
+  let startLocation = locationDict[row["Territory"]];
+  let connectionsList = row["Connections"].split(",");
+  connectionsList.forEach((col, j) => {
+    let endLocation = locationDict[col];
+    let pair = [row["Territory"], col].sort();
+    if (!lineCounts[pair]) {
+      lineCounts[pair] = 0;
     }
+    lineCounts[pair]++;
+  });
+});
+
+// Function to calculate a point offset from the start or end point
+function offsetPoint(start, end, offset) {
+  let angle = Math.atan2(start[1] - end[1], start[0] - end[0]);
+  let x = end[0] + offset * Math.cos(angle);
+  let y = end[1] + offset * Math.sin(angle);
+  return [x, y];
 }
 
+// Function to calculate a point offset perpendicular to the line between two points
+function perpendicularOffsetPoint(point, angle, offset) {
+  let x = point[0] + offset * Math.cos(angle);
+  let y = point[1] + offset * Math.sin(angle);
+  return [x, y];
+}
 
+// Add a new dictionary to keep track of lines that have already been drawn
+let drawnLines = {};
 
+// Draw the arrows
+let lineIndex = {};
+tableData.forEach((row) => {
+  let startLocation = locationDict[row["Territory"]];
+  let connectionsList = row["Connections"].split(",");
+  connectionsList.forEach((col, j) => {
+    let endLocation;
+    if (extraLocationDict[[row["Territory"], col]]) {
+      endLocation = extraLocationDict[[row["Territory"], col]];
+    } else {
+      endLocation = locationDict[col];
+    }
+    let pair = [row["Territory"], col].sort();
+    if (!lineIndex[pair]) {
+      lineIndex[pair] = 0;
+    }
+    let nLines = lineCounts[pair];
+    let indexOffset = 5 * (lineIndex[pair] - Math.floor(nLines / 2));
+    if (nLines % 2 === 0) {
+      indexOffset += indexOffset > 0 ? 5 / 2 : -5 / 2;
+    }
+    lineIndex[pair]++;
+    let angle =
+      Math.atan2(
+        startLocation[1] - endLocation[1],
+        startLocation[0] - endLocation[0]
+      ) +
+      Math.PI / 2;
 
+	// Check if a line has already been drawn between this pair of territories
+	if (drawnLines[pair] && drawnLines[pair]["color"] === colorDictionary[j + 1]) {
+	  // Add arrowheads to both ends of the existing line
+	  let existingArrowPathStart = document.createElementNS(
+	    "http://www.w3.org/2000/svg",
+	    "path"
+	  );
+	  existingArrowPathStart.setAttribute(
+	    "d",
+	    `M${drawnLines[pair]["end"][0]},${drawnLines[pair]["end"][1]} L${
+	      drawnLines[pair]["start"][0]
+	    },${drawnLines[pair]["start"][1]}`
+	  );
+	  existingArrowPathStart.setAttribute("stroke", colorDictionary[j + 1]);
+	  existingArrowPathStart.setAttribute("stroke-width", "3");
+	  existingArrowPathStart.setAttribute("marker-end", "url(#arrow)");
+	
+	  // Append the arrow path to the newSVG
+	  newSVG.appendChild(existingArrowPathStart);
+	} else {
+	  // Draw a new line and add it to the drawnLines dictionary
+	  let offsetStartLocation = perpendicularOffsetPoint(
+	    offsetPoint(endLocation, startLocation, 15),
+	    angle,
+	    indexOffset
+	  );
+	  let offsetEndLocation = perpendicularOffsetPoint(
+	    offsetPoint(startLocation, endLocation, 15),
+	    angle,
+	    indexOffset
+	  );
+	
+	  // Create a new path element for the arrow
+	  let arrowPath = document.createElementNS(
+	    "http://www.w3.org/2000/svg",
+	    "path"
+	  );
+	  arrowPath.setAttribute(
+	    "d",
+	    `M${offsetStartLocation[0]},${offsetStartLocation[1]} L${offsetEndLocation[0]},${offsetEndLocation[1]}`
+	  );
+	  arrowPath.setAttribute("stroke", colorDictionary[j + 1]);
+	  arrowPath.setAttribute("stroke-width", "3");
+	  arrowPath.setAttribute("marker-end", "url(#arrow)");
+	
+	  // Append the arrow path to the newSVG
+	  newSVG.appendChild(arrowPath);
+	
+	  // Add the new line to the drawnLines dictionary
+	  drawnLines[pair] = {
+	    start: offsetStartLocation,
+	    end: offsetEndLocation,
+	    color: colorDictionary[j + 1],
+	  };
+	}
+  });
+});
+
+// Add the newSVG to the range element
+rangeElement.appendChild(newSVG);
+
+// Bring the old SVG to front
+rangeElement.removeChild(svgElement);
+rangeElement.appendChild(svgElement);
+}
   
 	
 function debounce(func, wait) {
