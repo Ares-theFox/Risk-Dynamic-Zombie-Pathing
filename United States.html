@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("abc")
+console.log("def")
 
 	// Define map-specific items
 	var ZombiePathing = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -396,6 +396,12 @@ function generateMap() {
     }
   }); 
 
+// Create a dictionary to map territory names to pixel locations
+const locationDict = {};
+locationData.forEach((row) => {
+  locationDict[row["Range"]] = [row["Pixel Pair 1"], row["Pixel Pair 2"]];
+});
+
 // Count the number of lines between each pair of nodes
 const lineCounts = {};
 tableData.forEach((row) => {
@@ -424,7 +430,7 @@ tableData.forEach((row) => {
         lineIndex[pair] = 0;
       }
       const nLines = lineCounts[pair];
-      const indexOffset = 5 * (lineIndex[pair] - Math.floor(nLines / 2));
+      let indexOffset = 5 * (lineIndex[pair] - Math.floor(nLines / 2));
       if (nLines % 2 === 0) {
         indexOffset += indexOffset > 0 ? 2.5 : -2.5;
       }
@@ -458,8 +464,8 @@ tableData.forEach((row) => {
         `M ${offsetStartLocation[0]} ${offsetStartLocation[1]} L ${offsetEndLocation[0]} ${offsetEndLocation[1]}`
       );
       
-      // Set the stroke attribute to the color from the colorDictionary based on the level of connection
-      path.setAttribute("stroke", colorDictionary[connections[index]]);
+      // Set the stroke attribute to a color based on the level of connection
+      path.setAttribute("stroke", "black");
       
       // Set other attributes for the arrow
       path.setAttribute("stroke-width", 2);
