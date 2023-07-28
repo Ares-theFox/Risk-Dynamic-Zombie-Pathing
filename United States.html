@@ -186,7 +186,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("234234")
+console.log("asdfasdf")
 
 	// Define map-specific items
 	var ZombieFile = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20File.csv"
@@ -375,25 +375,24 @@ tableData.forEach((row) => {
       }
       lineCounts[pair]++;
       
-      // Define marker for arrowhead after j is defined
-      let marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
-      marker.setAttribute("id", "arrow");
-      marker.setAttribute("markerWidth", "4");
-      marker.setAttribute("markerHeight", "4");
-      marker.setAttribute("refX", "0");
-      marker.setAttribute("refY", "3");
-      marker.setAttribute("orient", "auto");
-      marker.setAttribute("markerUnits", "strokeWidth");
+// Define marker for arrowhead
+let marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+marker.setAttribute("id", "arrow");
+marker.setAttribute("markerWidth", "2"); // Set markerWidth to half its original value
+marker.setAttribute("markerHeight", "2"); // Set markerHeight to half its original value
+marker.setAttribute("refX", "0");
+marker.setAttribute("refY", "1.5"); // Set refY to half its original value
+marker.setAttribute("orient", "auto");
+marker.setAttribute("markerUnits", "strokeWidth");
 
-      // Create path for arrowhead
-      let arrowPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      arrowPath.setAttribute("d", "M0,0 L0,6 L9,3 z");
-      arrowPath.setAttribute("fill", colorDictionary[j + 1]); // Set fill attribute to color from color dictionary
-      arrowPath.setAttribute("stroke", colorDictionary[j + 1]); // Set stroke attribute to color from color dictionary
+// Create path for arrowhead
+let arrowPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+arrowPath.setAttribute("d", "M0,0 L0,3 L4.5,1.5 z"); // Adjust the d attribute to make the arrowhead pointy
 
-      // Append arrowPath to marker and marker to newSVG
-      marker.appendChild(arrowPath);
-      newSVG.appendChild(marker);
+// Append arrowPath to marker and marker to newSVG
+marker.appendChild(arrowPath);
+newSVG.appendChild(marker);
+
     });
   }
 });
@@ -447,25 +446,26 @@ tableData.forEach((row) => {
         ) +
         Math.PI / 2;
 
-	  // Check if a line has already been drawn between this pair of territories
-	  if (drawnLines[pair] && drawnLines[pair]["color"] === colorDictionary[j + 1]) {
-	    // Add arrowheads to both ends of the existing line
-	    let existingArrowPathStart = document.createElementNS(
-	      "http://www.w3.org/2000/svg",
-	      "path"
-	    );
-	    existingArrowPathStart.setAttribute(
-	      "d",
-	      `M${drawnLines[pair]["end"][0]},${drawnLines[pair]["end"][1]} L${
-	        drawnLines[pair]["start"][0]
-	      },${drawnLines[pair]["start"][1]}`
-	    );
-	    existingArrowPathStart.setAttribute("stroke", colorDictionary[j + 1]);
-	    existingArrowPathStart.setAttribute("stroke-width", "3");
-	    existingArrowPathStart.setAttribute("marker-end", "url(#arrow)");
-	  
-	    // Append the arrow path to the newSVG
-	    newSVG.appendChild(existingArrowPathStart);
+// Check if a line has already been drawn between this pair of territories
+if (drawnLines[pair] && drawnLines[pair]["color"] === colorDictionary[j + 1]) {
+  // Add arrowheads to both ends of the existing line
+  let existingArrowPathStart = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "path"
+  );
+  existingArrowPathStart.setAttribute(
+    "d",
+    `M${drawnLines[pair]["end"][0]},${drawnLines[pair]["end"][1]} L${
+      drawnLines[pair]["start"][0]
+    },${drawnLines[pair]["start"][1]}`
+  );
+  existingArrowPathStart.setAttribute("stroke", colorDictionary[j + 1]);
+  existingArrowPathStart.setAttribute("stroke-width", "3");
+  existingArrowPathStart.setAttribute("marker-end", "url(#arrow)");
+  existingArrowPathStart.setAttribute("fill", colorDictionary[j + 1]); // Set fill attribute to color from color dictionary
+
+  // Append the arrow path to the newSVG
+  newSVG.appendChild(existingArrowPathStart);
 	  } else {
 // Get the value of the "Distance Offset" input element
 let distanceOffset = document.getElementById("distanceOffsetInput").value;
