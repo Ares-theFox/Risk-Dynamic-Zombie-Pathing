@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("345")
+console.log("abc")
 
 	// Define map-specific items
 	var ZombiePathing = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -277,16 +277,16 @@ console.log("345")
 	);
 
 const colorDictionary = {
-    'Primary (1)': '#ff0000',
-    'Secondary (2)': '#18c500',
-    'Tertiary (3)': '#006cff',
-    'Quaternary (4)': 'yellow',
-    'Quinary (5)': 'white',
-    'Senary (6)': 'black',
-    'Septenary (7)': 'black',
-    'Octonary (8)': 'black',
-    'Nonary (9)': 'black',
-    'Denary (10)': 'black'
+    1: '#ff0000',
+    2: '#18c500',
+    3: '#006cff',
+    4: 'yellow',
+    5: 'white',
+    6: 'black',
+    7: 'black',
+    8: 'black',
+    9: 'black',
+    10: 'black'
 }
 	
 // End of global variables
@@ -394,144 +394,83 @@ function generateMap() {
     } else {
       row["O"] = 0;
     }
-  });
+  }); 
 
-  // Remove existing arrows
-  newSvg.querySelectorAll("line").forEach((line) => line.remove());
-
-// Draw arrows between territories on the new SVG element using data from pixelData and tableData
-tableData.forEach(function (row) {
-  const startTerritory = row["Territory"];
-  if (row["Connections"] && row["Connections"].trim() !== "") {
+// Count the number of lines between each pair of nodes
+const lineCounts = {};
+tableData.forEach((row) => {
+  if (row["Connections"]) {
     const connections = row["Connections"].split(",");
-    connections.forEach(function (endTerritory, index) {
-      const startPixelRow = pixelData.find((pixelRow) => pixelRow["Range"] === startTerritory);
-      const endPixelRow = pixelData.find((pixelRow) => pixelRow["Range"] === endTerritory);
-      if (startPixelRow && endPixelRow) {
-        const startX = startPixelRow["Pixel Pair 1"];
-        const startY = startPixelRow["Pixel Pair 2"];
-        const endX = endPixelRow["Pixel Pair 1"];
-        const endY = endPixelRow["Pixel Pair 2"];
-
-        // Calculate the fraction of the way along the line for the new start and end points based on the index of the connection
-        let startFraction, endFraction;
-        if (index === 0) {
-          startFraction = 0.1;
-          endFraction = 0.9;
-        } else if (index === 1) {
-          startFraction = 0.15;
-          endFraction = 0.85;
-        } else if (index === 2) {
-          startFraction = 0.2;
-          endFraction = 0.8;
-        } else if (index === 3) {
-          startFraction = 0.25;
-          endFraction = 0.75;
-        } else if (index === 4) {
-          startFraction = 0.3;
-          endFraction = 0.7;
-        } else if (index === 5) {
-          startFraction = 0.35;
-          endFraction = 0.65;
-        } else if (index === 6) {
-          startFraction = 0.4;
-          endFraction = 0.6;
-        } else if (index === 7) {
-          startFraction = 0.45;
-          endFraction = 0.55;
-        } else if (index === 8) {
-          startFraction = 0.5;
-          endFraction = 0.5;
-        } else if (index === 9) {
-          startFraction = 0.55;
-          endFraction = 0.45;
-        }
-
-        // Calculate the new start and end points using linear interpolation
-        const newStartX = startX + (endX - startX) * startFraction;
-        const newStartY = startY + (endY - startY) * startFraction;
-        const newEndX = startX + (endX - startX) * endFraction;
-        const newEndY = startY + (endY - startY) * endFraction;
-
-        // Create a marker element
-        const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
-        marker.setAttribute("id", `arrow-${index}`);
-        marker.setAttribute("markerWidth", "10");
-        marker.setAttribute("markerHeight", "10");
-        marker.setAttribute("refX", "0");
-        marker.setAttribute("refY", "3");
-        marker.setAttribute("orient", "auto");
-        marker.setAttribute("markerUnits", "strokeWidth");
-
-         // Create a path element for the arrowhead
-         const arrowPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-         arrowPath.setAttribute("d", "M0,0 L0,6 L9,3 z");
-
-         // Set the fill color of the arrowhead based on its index in the connections array
-if (index === 0) {
-  arrowPath.setAttribute("fill", colorDictionary["Primary (1)"]);
-} else if (index === 1) {
-  arrowPath.setAttribute("fill", colorDictionary["Secondary (2)"]);
-} else if (index === 2) {
-  arrowPath.setAttribute("fill", colorDictionary["Tertiary (3)"]);
-} else if (index === 3) {
-  arrowPath.setAttribute("fill", colorDictionary["Quaternary (4)"]);
-} else if (index === 4) {
-  arrowPath.setAttribute("fill", colorDictionary["Quinary (5)"]);
-} else if (index === 5) {
-  arrowPath.setAttribute("fill", colorDictionary["Senary (6)"]);
-} else if (index === 6) {
-  arrowPath.setAttribute("fill", colorDictionary["Septenary (7)"]);
-} else if (index === 7) {
-  arrowPath.setAttribute("fill", colorDictionary["Octonary (8)"]);
-} else if (index === 8) {
-  arrowPath.setAttribute("fill", colorDictionary["Nonary (9)"]);
-} else if (index === 9) {
-  arrowPath.setAttribute("fill", colorDictionary["Denary (10)"]);
-}
-
-// Append the arrowPath to the marker
-marker.appendChild(arrowPath);
-
-// Append the marker to the newSvg element
-newSvg.appendChild(marker);
-
-// Create a path element for the line with an arrowhead
-const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-path.setAttribute("d", `M${newStartX},${newStartY} L${newEndX},${newEndY}`);
-path.setAttribute("stroke-width", "2");
-path.setAttribute("marker-end", `url(#arrow-${index})`);
-
-// Set the stroke color of the path based on its index in the connections array
-if (index === 0) {
-  path.setAttribute("stroke", colorDictionary["Primary (1)"]);
-} else if (index === 1) {
-  path.setAttribute("stroke", colorDictionary["Secondary (2)"]);
-} else if (index === 2) {
-  path.setAttribute("stroke", colorDictionary["Tertiary (3)"]);
-} else if (index === 3) {
-  path.setAttribute("stroke", colorDictionary["Quaternary (4)"]);
-} else if (index === 4) {
-  path.setAttribute("stroke", colorDictionary["Quinary (5)"]);
-} else if (index === 5) {
-  path.setAttribute("stroke", colorDictionary["Senary (6)"]);
-} else if (index === 6) {
-  path.setAttribute("stroke", colorDictionary["Septenary (7)"]);
-} else if (index === 7) {
-  path.setAttribute("stroke", colorDictionary["Octonary (8)"]);
-} else if (index === 8) {
-  path.setAttribute("stroke", colorDictionary["Nonary (9)"]);
-} else if (index === 9) {
-  path.setAttribute("stroke", colorDictionary["Denary (10)"]);
-}
-
-// Append the path to the newSvg element
-newSvg.appendChild(path);
+    connections.forEach((connection) => {
+      const pair = [row["Territory"], connection].sort();
+      if (!lineCounts[pair]) {
+        lineCounts[pair] = 0;
       }
+      lineCounts[pair]++;
     });
   }
-});	      
-	
+});
+
+// Draw the arrows
+const lineIndex = {};
+tableData.forEach((row) => {
+  if (row["Connections"]) {
+    const startLocation = locationDict[row["Territory"]];
+    const connections = row["Connections"].split(",");
+    connections.forEach((connection, index) => {
+      const endLocation = locationDict[connection];
+      const pair = [row["Territory"], connection].sort();
+      if (!lineIndex[pair]) {
+        lineIndex[pair] = 0;
+      }
+      const nLines = lineCounts[pair];
+      const indexOffset = 5 * (lineIndex[pair] - Math.floor(nLines / 2));
+      if (nLines % 2 === 0) {
+        indexOffset += indexOffset > 0 ? 2.5 : -2.5;
+      }
+      lineIndex[pair]++;
+      const angle =
+        Math.atan2(
+          startLocation[1] - endLocation[1],
+          startLocation[0] - endLocation[0]
+        ) +
+        Math.PI / 2;
+
+      // Calculate the offset points for the start and end locations
+      const offsetStartLocation = [
+        startLocation[0] + indexOffset * Math.cos(angle),
+        startLocation[1] + indexOffset * Math.sin(angle),
+      ];
+      const offsetEndLocation = [
+        endLocation[0] + indexOffset * Math.cos(angle),
+        endLocation[1] + indexOffset * Math.sin(angle),
+      ];
+
+      // Create a new SVG path element for the arrow
+      const path = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "path"
+      );
+      
+      // Set the d attribute to define the path of the arrow and arrowhead
+      path.setAttribute(
+        "d",
+        `M ${offsetStartLocation[0]} ${offsetStartLocation[1]} L ${offsetEndLocation[0]} ${offsetEndLocation[1]}`
+      );
+      
+      // Set the stroke attribute to the color from the colorDictionary based on the level of connection
+      path.setAttribute("stroke", colorDictionary[connections[index]]);
+      
+      // Set other attributes for the arrow
+      path.setAttribute("stroke-width", 2);
+      path.setAttribute("fill", "none");
+      
+      // Append the new path element to the new SVG element
+      newSvg.appendChild(path);
+    });
+  }
+});
+
   // Set font size of indirect connections
   var fontSizeInput = document.getElementById("fontSizeInput");
   fontSizeInput.addEventListener("input", function () {
