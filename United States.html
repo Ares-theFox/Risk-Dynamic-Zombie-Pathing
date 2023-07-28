@@ -184,7 +184,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("433ar3a")
+console.log("3434343434")
 
 	// Define map-specific items
 	var ZombieFile = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20File.csv"
@@ -381,15 +381,18 @@ tableData.forEach((row) => {
 let lineCounts = {};
 tableData.forEach((row) => {
   let startLocation = locationDict[row["Territory"]];
-  let connectionsList = row["Connections"].split(",");
-  connectionsList.forEach((col, j) => {
-    let endLocation = locationDict[col];
-    let pair = [row["Territory"], col].sort();
-    if (!lineCounts[pair]) {
-      lineCounts[pair] = 0;
-    }
-    lineCounts[pair]++;
-  });
+  let connectionsList = [];
+  if (row["Connections"] !== "" && row["Connections"] !== undefined) {
+    connectionsList = row["Connections"].split(",");
+    connectionsList.forEach((col, j) => {
+      let endLocation = locationDict[col];
+      let pair = [row["Territory"], col].sort();
+      if (!lineCounts[pair]) {
+        lineCounts[pair] = 0;
+      }
+      lineCounts[pair]++;
+    });
+  }
 });
 
 // Function to calculate a point offset from the start or end point
@@ -414,88 +417,92 @@ let drawnLines = {};
 let lineIndex = {};
 tableData.forEach((row) => {
   let startLocation = locationDict[row["Territory"]];
-  let connectionsList = row["Connections"].split(",");
-  connectionsList.forEach((col, j) => {
-    let endLocation;
-    if (extraLocationDict[[row["Territory"], col]]) {
-      endLocation = extraLocationDict[[row["Territory"], col]];
-    } else {
-      endLocation = locationDict[col];
-    }
-    let pair = [row["Territory"], col].sort();
-    if (!lineIndex[pair]) {
-      lineIndex[pair] = 0;
-    }
-    let nLines = lineCounts[pair];
-    let indexOffset = 5 * (lineIndex[pair] - Math.floor(nLines / 2));
-    if (nLines % 2 === 0) {
-      indexOffset += indexOffset > 0 ? 5 / 2 : -5 / 2;
-    }
-    lineIndex[pair]++;
-    let angle =
-      Math.atan2(
-        startLocation[1] - endLocation[1],
-        startLocation[0] - endLocation[0]
-      ) +
-      Math.PI / 2;
+  let connectionsList = [];
+  if (row["Connections"] !== "" && row["Connections"] !== undefined) {
+    connectionsList = row["Connections"].split(",");
+    connectionsList.forEach((col, j) => {
+      let endLocation;
+      if (extraLocationDict[[row["Territory"], col]]) {
+        endLocation = extraLocationDict[[row["Territory"], col]];
+      } else {
+        endLocation = locationDict[col];
+      }
+      let pair = [row["Territory"], col].sort();
+      if (!lineIndex[pair]) {
+        lineIndex[pair] = 0;
+      }
+      let nLines = lineCounts[pair];
+      let indexOffset = 5 * (lineIndex[pair] - Math.floor(nLines / 2));
+      if (nLines % 2 === 0) {
+        indexOffset += indexOffset > 0 ? 5 / 2 : -5 / 2;
+      }
+      lineIndex[pair]++;
+      let angle =
+        Math.atan2(
+          startLocation[1] - endLocation[1],
+          startLocation[0] - endLocation[0]
+        ) +
+        Math.PI / 2;
 
-	// Check if a line has already been drawn between this pair of territories
-	if (drawnLines[pair] && drawnLines[pair]["color"] === colorDictionary[j + 1]) {
-	  // Add arrowheads to both ends of the existing line
-	  let existingArrowPathStart = document.createElementNS(
-	    "http://www.w3.org/2000/svg",
-	    "path"
-	  );
-	  existingArrowPathStart.setAttribute(
-	    "d",
-	    `M${drawnLines[pair]["end"][0]},${drawnLines[pair]["end"][1]} L${
-	      drawnLines[pair]["start"][0]
-	    },${drawnLines[pair]["start"][1]}`
-	  );
-	  existingArrowPathStart.setAttribute("stroke", colorDictionary[j + 1]);
-	  existingArrowPathStart.setAttribute("stroke-width", "3");
-	  existingArrowPathStart.setAttribute("marker-end", "url(#arrow)");
-	
-	  // Append the arrow path to the newSVG
-	  newSVG.appendChild(existingArrowPathStart);
-	} else {
-	  // Draw a new line and add it to the drawnLines dictionary
-	  let offsetStartLocation = perpendicularOffsetPoint(
-	    offsetPoint(endLocation, startLocation, 15),
-	    angle,
-	    indexOffset
-	  );
-	  let offsetEndLocation = perpendicularOffsetPoint(
-	    offsetPoint(startLocation, endLocation, 15),
-	    angle,
-	    indexOffset
-	  );
-	
-	  // Create a new path element for the arrow
-	  let arrowPath = document.createElementNS(
-	    "http://www.w3.org/2000/svg",
-	    "path"
-	  );
-	  arrowPath.setAttribute(
-	    "d",
-	    `M${offsetStartLocation[0]},${offsetStartLocation[1]} L${offsetEndLocation[0]},${offsetEndLocation[1]}`
-	  );
-	  arrowPath.setAttribute("stroke", colorDictionary[j + 1]);
-	  arrowPath.setAttribute("stroke-width", "3");
-	  arrowPath.setAttribute("marker-end", "url(#arrow)");
-	
-	  // Append the arrow path to the newSVG
-	  newSVG.appendChild(arrowPath);
-	
-	  // Add the new line to the drawnLines dictionary
-	  drawnLines[pair] = {
-	    start: offsetStartLocation,
-	    end: offsetEndLocation,
-	    color: colorDictionary[j + 1],
-	  };
-	}
-  });
+	  // Check if a line has already been drawn between this pair of territories
+	  if (drawnLines[pair] && drawnLines[pair]["color"] === colorDictionary[j + 1]) {
+	    // Add arrowheads to both ends of the existing line
+	    let existingArrowPathStart = document.createElementNS(
+	      "http://www.w3.org/2000/svg",
+	      "path"
+	    );
+	    existingArrowPathStart.setAttribute(
+	      "d",
+	      `M${drawnLines[pair]["end"][0]},${drawnLines[pair]["end"][1]} L${
+	        drawnLines[pair]["start"][0]
+	      },${drawnLines[pair]["start"][1]}`
+	    );
+	    existingArrowPathStart.setAttribute("stroke", colorDictionary[j + 1]);
+	    existingArrowPathStart.setAttribute("stroke-width", "3");
+	    existingArrowPathStart.setAttribute("marker-end", "url(#arrow)");
+	  
+	    // Append the arrow path to the newSVG
+	    newSVG.appendChild(existingArrowPathStart);
+	  } else {
+	    // Draw a new line and add it to the drawnLines dictionary
+	    let offsetStartLocation = perpendicularOffsetPoint(
+	      offsetPoint(endLocation, startLocation, 15),
+	      angle,
+	      indexOffset
+	    );
+	    let offsetEndLocation = perpendicularOffsetPoint(
+	      offsetPoint(startLocation, endLocation, 15),
+	      angle,
+	      indexOffset
+	    );
+	  
+	    // Create a new path element for the arrow
+	    let arrowPath = document.createElementNS(
+	      "http://www.w3.org/2000/svg",
+	      "path"
+	    );
+	    arrowPath.setAttribute(
+	      "d",
+	      `M${offsetStartLocation[0]},${offsetStartLocation[1]} L${offsetEndLocation[0]},${offsetEndLocation[1]}`
+	    );
+	    arrowPath.setAttribute("stroke", colorDictionary[j + 1]);
+	    arrowPath.setAttribute("stroke-width", "3");
+	    arrowPath.setAttribute("marker-end", "url(#arrow)");
+	  
+	    // Append the arrow path to the newSVG
+	    newSVG.appendChild(arrowPath);
+	  
+	    // Add the new line to the drawnLines dictionary
+	    drawnLines[pair] = {
+	      start: offsetStartLocation,
+	      end: offsetEndLocation,
+	      color: colorDictionary[j + 1],
+	    };
+	  }
+    });
+  }
 });
+
 
 // Add the newSVG to the range element
 rangeElement.appendChild(newSVG);
