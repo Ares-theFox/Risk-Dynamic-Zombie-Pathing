@@ -188,13 +188,11 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("123412")
+console.log("abcsdsadf")
 
 	// Define map-specific items
-	var ZombiePathing = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
-	var PixelLocations = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Pixel%20Locations.csv"
+	var UltimateZombieFile = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Ultimate%20Zombie%20File.csv"
 	var SVG = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Paths.svg"
-	var PriorityList = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Priority%20List.csv"
 	var BlizzardPattern = blizzardPatternImage.src;
 	// Remember to change the img src, blizzard pattern, and the alt title!!!!!!!!
 
@@ -206,73 +204,27 @@ console.log("123412")
 	let clickedPathsBlizzardsPortals = []
 	
 	// Define connections tableData
-	let tableData;
-	let tableDataClone;
+	let zombieData;
+	let zombieDataClone;
 	Papa.parse(
-	  ZombiePathing,
+	  UltimateZombieFile,
 	  {
 	    download: true,
 	    header: true,
 	    complete: function (results) {
-	      // Assign parsed data to tableData
-	      tableData = results.data;
-	      // Remove zero-width space character from tableData
-	      for (let i = 0; i < tableData.length; i++) {
-		for (let key in tableData[i]) {
-		  if (tableData[i].hasOwnProperty(key)) {
-		    tableData[i][key] = tableData[i][key].replace(/\u200B/g, "");
+	      // Assign parsed data to zombieData
+	      zombieData = results.data;
+	      // Remove zero-width space character from zombieData
+	      for (let i = 0; i < zombieData.length; i++) {
+		for (let key in zombieData[i]) {
+		  if (zombieData[i].hasOwnProperty(key)) {
+		    zombieData[i][key] = zombieData[i][key].replace(/\u200B/g, "");
 		  }
 		}
 	      }
 	      // Create a deep copy of tableData
-	      tableDataClone = JSON.parse(JSON.stringify(tableData));
+	      zombieDataClone = JSON.parse(JSON.stringify(zombieData));
 	    },
-	  }
-	);
-	
-	// Define pixel and priority as global variables
-	var pixelData;
-	var priorityData;
-	
-	// Define a counter variable to keep track of the number of requests that have completed
-	var requestsCompleted = 0;
-	
-	// Define a function to call when a request has completed
-	function onRequestComplete() {
-	  requestsCompleted++;
-	  if (requestsCompleted === 3) {
-	    // All requests have completed, so call the generateMap function
-	    generateMap();
-	  }
-	}
-
-	// Load the pixel data
-	Papa.parse(
-	  PixelLocations,
-	  {
-	    download: true,
-	    header: true,
-	    complete: function (results) {
-	      // Assign the parsed data to the global csvData variable
-	      pixelData = results.data;
-	      // Call the onRequestComplete function to indicate that this request has completed
-	      onRequestComplete();
-	    }
-	  }
-	);
-
-	// Load the priority data
-	Papa.parse(
-	  PriorityList,
-	  {
-	    download: true,
-	    header: true,
-	    complete: function (results) {
-	      // Assign the parsed data to the global csvData variable
-	      priorityData = results.data;
-	      // Call the onRequestComplete function to indicate that this request has completed
-	      onRequestComplete();
-	    }
 	  }
 	);
 
@@ -321,13 +273,13 @@ xhr.onload = function () {
       newSvg.setAttribute("height", svgElement.getAttribute("height"));
       // Set the position of the new SVG element to absolute so that it can be positioned on top of the existing SVG element
       newSvg.style.position = "absolute";
-// Get a reference to the img element
-const imgElement = document.getElementById("map");
-// Get the position of the img element relative to the viewport
-const rect = imgElement.getBoundingClientRect();
-// Set the left and top properties of the new SVG element to match the position of the img element, accounting for the offset
-newSvg.style.left = (rect.left - 8) + "px";
-newSvg.style.top = (rect.top - 116) + "px";
+	// Get a reference to the img element
+	const imgElement = document.getElementById("map");
+	// Get the position of the img element relative to the viewport
+	const rect = imgElement.getBoundingClientRect();
+	// Set the left and top properties of the new SVG element to match the position of the img element, accounting for the offset
+	newSvg.style.left = (rect.left - 8) + "px";
+	newSvg.style.top = (rect.top - 116) + "px";
       // Set the z-index of the new SVG element to a high value so that it appears on top of other elements
       newSvg.style.zIndex = 9999;
       // Set the pointer-events property of the new SVG element to "none" so that it does not capture mouse events
@@ -335,9 +287,6 @@ newSvg.style.top = (rect.top - 116) + "px";
       // Append the new SVG element to the same parent as the existing SVG element
       svgElement.parentNode.appendChild(newSvg);
     }
-
-    // Call the onRequestComplete function to indicate that this request has completed
-    onRequestComplete();
   }
 };
 xhr.send();
@@ -359,13 +308,13 @@ function stopEditing() {
 function generateMap() {
   // Update buttons
   updateButtonText();
-  // Reset tableData to its original values
-  tableData = JSON.parse(JSON.stringify(tableDataClone));
+  // Reset zombieData to its original values
+  zombieData = JSON.parse(JSON.stringify(zombieDataClone));
   // Remove existing text elements
   svgElement.querySelectorAll("text").forEach((text) => text.remove());
   // Remove everything contained in the blizzard array
-	// Find rows in table data where column A matches values in blizzardArray
-	const rows = tableData.filter((row) => blizzardArray.includes(row["Territory"]));
+	// Find rows in zombieData where column Territory matches values in blizzardArray
+	const rows = zombieData.filter((row) => blizzardArray.includes(row["Territory"]));
 
 	// Remove everything in column B for those rows
 	rows.forEach((row) => {
@@ -373,7 +322,7 @@ function generateMap() {
 	});
 
 	// Remove all instances of values in blizzardArray from column B
-	tableData.forEach((row) => {
+	zombieData.forEach((row) => {
 	  if (row["Connections"]) {
 	    // Split the value in column B into an array of values
 	    let values = row["Connections"].split(",");
@@ -385,7 +334,7 @@ function generateMap() {
 	});
 
   // Recalculate columns L through P for all rows
-  tableData.forEach((row) => { 
+  zombieData.forEach((row) => { 
     // Column O: Count how many comma-separated values are in column B
     if (row["Connections"] && row["Connections"].trim() !== "") {
       // check if column B is not empty or undefined
@@ -398,13 +347,13 @@ function generateMap() {
 
 // Create a dictionary to map territory names to pixel locations
 const locationDict = {};
-pixelData.forEach((row) => {
-  locationDict[row["Range"]] = [row["Pixel Pair 1"], row["Pixel Pair 2"]];
+zombieData.forEach((row) => {
+  locationDict[row["Territory"]] = [row["Pixel Pair 1"], row["Pixel Pair 2"]];
 });
 
 // Count the number of lines between each pair of nodes
 const lineCounts = {};
-tableData.forEach((row) => {
+zombieData.forEach((row) => {
   if (row["Connections"]) {
     const connections = row["Connections"].split(",");
     connections.forEach((connection) => {
@@ -419,13 +368,13 @@ tableData.forEach((row) => {
 
 // Draw the arrows
 const lineIndex = {};
-tableData.forEach((row) => {
+zombieData.forEach((row) => {
   if (row["Connections"]) {
-    const startLocation = pixelData[row["Range"]];
+    const startLocation = locationDict[row["Territory"]];
     const connections = row["Connections"].split(",");
     connections.forEach((connection, index) => {
-      const endLocation = pixelData[connection];
-      const pair = [row["Range"], connection].sort();
+      const endLocation = locationDict[connection];
+      const pair = [row["Territory"], connection].sort();
       if (!lineIndex[pair]) {
         lineIndex[pair] = 0;
       }
@@ -451,10 +400,6 @@ tableData.forEach((row) => {
         endLocation[0] + indexOffset * Math.cos(angle),
         endLocation[1] + indexOffset * Math.sin(angle),
       ];
-
-      // Log the values of offsetStartLocation and offsetEndLocation
-      console.log(`offsetStartLocation: ${offsetStartLocation}`);
-      console.log(`offsetEndLocation: ${offsetEndLocation}`);
 
       // Create a new SVG path element for the arrow
       const path = document.createElementNS(
@@ -497,21 +442,21 @@ tableData.forEach((row) => {
   // Add priority text
   paths.forEach(function (path) {
     var pathId = path.getAttribute("id");
-    for (var i = 0; i < tableData.length; i++) {
-      if (tableData[i]["Territory"] === pathId) {
+    for (var i = 0; i < zombieData.length; i++) {
+      if (zombieData[i]["Territory"] === pathId) {
 	// set stroke stuff
         path.setAttribute("stroke-opacity", "100");
         path.style.setProperty("stroke", "transparent", "important");
         path.style.setProperty("stroke-width", "3", "important");
-        // Add text to the specified location from CSV data
-        value = tableData[i]["O"];
+        // Add text to the specified location from zombieData
+        value = zombieData[i]["O"];
         if (value !== 0) {
-          // Find matching row in pixel data
-          var pixelRow = pixelData.find(function (row) {
-            return row["Range"] === pathId;
+          // Find matching row in zombieData
+          var pixelRow = zombieData.find(function (row) {
+            return row["Territory"] === pathId;
           });
-	  // Find matching row in priority data
-          var priorityRow = priorityData.find(function (row) {
+	  // Find matching row in zombieData
+          var priorityRow = zombieData.find(function (row) {
             return row["Territory"] === pathId;
           });
 	  var priorityValue = priorityRow["Priority"];
