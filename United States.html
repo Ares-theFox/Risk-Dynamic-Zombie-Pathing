@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("234")
+console.log("345")
 
 	// Define map-specific items
 	var ZombiePathing = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -394,6 +394,7 @@ function generateMap() {
   });
 
 // Draw arrows between territories on the new SVG element using data from pixelData and tableData
+	console.log(tableData)
 tableData.forEach(function (row) {
   var startTerritory = row["Territory"];
   var connections = row["Connections"].split(",");
