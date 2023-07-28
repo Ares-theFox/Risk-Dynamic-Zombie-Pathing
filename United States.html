@@ -184,7 +184,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("asdf")
+console.log("23453245")
 
 	// Define map-specific items
 	var ZombieFile = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20File.csv"
@@ -242,6 +242,7 @@ console.log("asdf")
 // Load the SVG
 let paths;
 let svgElement;
+let newSVG; // Define newSVG with let keyword at the start
 var xhr = new XMLHttpRequest();
 xhr.open(
   "GET",
@@ -259,7 +260,7 @@ xhr.onload = function () {
       path.setAttribute("stroke-opacity", "0");
     });
 
-    // Define new SVG as a global variable
+    // Define new SVG as a local variable
     newSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     
     // Get the dimensions of the image element with id="map"
@@ -278,6 +279,7 @@ xhr.onload = function () {
   }
 };
 xhr.send();
+
 
 	
 
