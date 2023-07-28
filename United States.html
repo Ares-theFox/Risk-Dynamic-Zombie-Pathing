@@ -260,7 +260,7 @@ xhr.onload = function () {
     });
 
     // Define new SVG as a global variable
-    let newSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    newSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     
     // Get the dimensions of the image element with id="map"
     let mapImg = document.getElementById("map");
@@ -279,6 +279,7 @@ xhr.onload = function () {
 };
 xhr.send();
 
+	
 
 // Stop editing
 function stopEditing() {
