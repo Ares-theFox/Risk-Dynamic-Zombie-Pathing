@@ -184,7 +184,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("1234")
+console.log("435")
 
 	// Define map-specific items
 	var ZombieFile = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20File.csv"
@@ -333,7 +333,7 @@ function generateMap() {
 	  }
 	});
   // Calculate O
-  tableData.forEach((row) => {	  
+  tableData.forEach((row) => {
     if (row["Connections"] && row["Connections"].trim() !== "") {
       // check if column B is not empty or undefined
       const values = row["Connections"].split(",");
@@ -341,7 +341,7 @@ function generateMap() {
     } else {
       row["O"] = 0;
     }
-  }
+  })
 // Calculate offsets
 let locationDict = {};
 let extraLocationDict = {};
