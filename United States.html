@@ -184,7 +184,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("435")
+console.log("1234")
 
 	// Define map-specific items
 	var ZombieFile = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20File.csv"
@@ -239,28 +239,34 @@ console.log("435")
 	
 // End of global variables
 
-	// Load the SVG
-	let paths;
-	let svgElement;
-	var xhr = new XMLHttpRequest();
-	xhr.open(
-	  "GET",
-	  SVG
-	);
-	xhr.onload = function () {
-	  if (xhr.status === 200) {
-	    var svg = xhr.responseText;
-	    var rangeElement = document.getElementById("range");
-	    rangeElement.innerHTML = svg;
-	    svgElement = rangeElement.querySelector("svg");
-	    paths = svgElement.querySelectorAll("path");
-	    paths.forEach(function (path) {
-	      path.setAttribute("fill", "transparent");
-	      path.setAttribute("stroke-opacity", "0");
-	    });
-	  }
-	};
-	xhr.send();
+// Load the SVG
+let paths;
+let svgElement;
+var xhr = new XMLHttpRequest();
+xhr.open(
+  "GET",
+  SVG
+);
+xhr.onload = function () {
+  if (xhr.status === 200) {
+    var svg = xhr.responseText;
+    var rangeElement = document.getElementById("range");
+    rangeElement.innerHTML = svg;
+    svgElement = rangeElement.querySelector("svg");
+    paths = svgElement.querySelectorAll("path");
+    paths.forEach(function (path) {
+      path.setAttribute("fill", "transparent");
+      path.setAttribute("stroke-opacity", "0");
+    });
+
+    // Define new SVG as a global variable
+    let newSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    newSVG.setAttribute("width", svgElement.getAttribute("width"));
+    newSVG.setAttribute("height", svgElement.getAttribute("height"));
+    newSVG.setAttribute("viewBox", svgElement.getAttribute("viewBox"));
+  }
+};
+xhr.send();
 
 // Stop editing
 function stopEditing() {
@@ -279,11 +285,6 @@ function stopEditing() {
 
 
 	
-// Define new SVG as a global variable
-let newSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-newSVG.setAttribute("width", svgElement.getAttribute("width"));
-newSVG.setAttribute("height", svgElement.getAttribute("height"));
-newSVG.setAttribute("viewBox", svgElement.getAttribute("viewBox"));
 
 // Define marker for arrowhead
 let marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
