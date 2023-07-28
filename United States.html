@@ -277,24 +277,85 @@ function stopEditing() {
 	return;
 }
 	
+// Create a new SVG element for drawing arrows
+let arrowSvgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+arrowSvgElement.setAttribute("width", svgElement.getAttribute("width"));
+arrowSvgElement.setAttribute("height", svgElement.getAttribute("height"));
+arrowSvgElement.setAttribute("viewBox", svgElement.getAttribute("viewBox"));
+document.getElementById("range").appendChild(arrowSvgElement);
+
+// Function to calculate the points of an arrowhead
+function arrowhead(start, end) {
+  let angle = Math.atan2(start[1] - end[1], start[0] - end[0]);
+  let x1 = end[0] + 10 * Math.cos(angle + Math.PI / 6);
+  let y1 = end[1] + 10 * Math.sin(angle + Math.PI / 6);
+  let x2 = end[0] + 10 * Math.cos(angle - Math.PI / 6);
+  let y2 = end[1] + 10 * Math.sin(angle - Math.PI / 6);
+  return [x1, y1, end[0], end[1], x2, y2];
+}
+
+// Function to draw an arrow between two points
+function drawArrow(start, end, color) {
+  // Create a new path element
+  let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  // Set the path data attribute to draw a line between the start and end points
+  path.setAttribute("d", `M ${start[0]} ${start[1]} L ${end[0]} ${end[1]}`);
+  // Set the stroke color and width
+  path.setAttribute("stroke", color);
+  path.setAttribute("stroke-width", "3");
+  // Add the path to the arrow SVG element
+  arrowSvgElement.appendChild(path);
+
+  // Create a new polygon element for the arrowhead
+  let polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+  // Set the points attribute to draw an arrowhead at the end point
+  polygon.setAttribute("points", arrowhead(start, end).join(","));
+  // Set the fill color
+  polygon.setAttribute("fill", color);
+  // Add the polygon to the arrow SVG element
+  arrowSvgElement.appendChild(polygon);
+}
+
 // Generate the map
 function generateMap() {
-  // Update buttons
-  updateButtonText();
-  // Reset tableData to its original values
-  tableData = JSON.parse(JSON.stringify(tableDataClone));
+    // Update buttons
+    updateButtonText();
+    // Reset tableData to its original values
+    tableData = JSON.parse(JSON.stringify(tableDataClone));
 
+    // Clear any existing arrows from the arrow SVG element
+    while (arrowSvgElement.firstChild) {
+        arrowSvgElement.removeChild(arrowSvgElement.firstChild);
+    }
 
+    // Draw arrows between territories based on their connections
+    for (let i = 0; i < tableData.length; i++) {
+        let territory = tableData[i]["Territory"];
+        let connections = tableData[i]["Connections"].split(", ");
+        let startLocation = [tableData[i]["Pixel Pair 1"], tableData[i]["Pixel Pair 2"]];
+        for (let j = 0; j < connections.length; j++) {
+            let connection = connections[j];
+            let endLocation = location_dict[connection];
+            drawArrow(startLocation, endLocation, colorDictionary[j + 1]);
+        }
+    }
 
-
-
-
-
-
-
-
-
-
+    // Add text labels to the center of each territory
+    for (let i = 0; i < tableData.length; i++) {
+        let territory = tableData[i]["Territory"];
+        let priority = tableData[i]["Priority"];
+        let x = tableData[i]["Pixel Pair 1"];
+        let y = tableData[i]["Pixel Pair 2"];
+        let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", x);
+        text.setAttribute("y", y);
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("dominant-baseline", "central");
+        text.setAttribute("font-size", "16px");
+        text.textContent = priority;
+        arrowSvgElement.appendChild(text);
+    }
+}
 
 
 
