@@ -261,12 +261,24 @@ xhr.onload = function () {
 
     // Define new SVG as a global variable
     let newSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    newSVG.setAttribute("width", svgElement.getAttribute("width"));
-    newSVG.setAttribute("height", svgElement.getAttribute("height"));
-    newSVG.setAttribute("viewBox", svgElement.getAttribute("viewBox"));
+    
+    // Get the dimensions of the image element with id="map"
+    let mapImg = document.getElementById("map");
+    newSVG.setAttribute("width", mapImg.naturalWidth);
+    newSVG.setAttribute("height", mapImg.naturalHeight);
+    
+    // Set CSS properties to position newSVG on top of svgElement
+    svgElement.style.position = "absolute";
+    newSVG.style.position = "absolute";
+    newSVG.style.zIndex = "1";
+    newSVG.style.pointerEvents = "none";
+    
+    // Add the newSVG to the range element
+    rangeElement.appendChild(newSVG);
   }
 };
 xhr.send();
+
 
 // Stop editing
 function stopEditing() {
