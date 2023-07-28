@@ -188,7 +188,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("891")
+console.log("912")
 
 	// Define map-specific items
 	var ZombiePathing = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20Pathing.csv"
@@ -458,10 +458,32 @@ tableData.forEach(function (row) {
         // Create a path element for the line with an arrowhead
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         path.setAttribute("d", `M${startX},${startY} L${endX},${endY}`);
-        path.setAttribute("stroke", "#000");
         path.setAttribute("stroke-width", "2");
         path.setAttribute("marker-end", `url(#arrow-${index})`);
 
+	// Set the stroke color of the path based on its index in the connections array
+	if (index === 0) {
+	  path.setAttribute("stroke", colorDictionary["Primary (1)"]);
+	} else if (index === 1) {
+	  path.setAttribute("stroke", colorDictionary["Secondary (2)"]);
+	} else if (index === 2) {
+	  path.setAttribute("stroke", colorDictionary["Tertiary (3)"]);
+	} else if (index === 3) {
+	  path.setAttribute("stroke", colorDictionary["Quaternary (4)"]);
+	} else if (index === 4) {
+	  path.setAttribute("stroke", colorDictionary["Quinary (5)"]);
+	} else if (index === 5) {
+	  path.setAttribute("stroke", colorDictionary["Senary (6)"]);
+	} else if (index === 6) {
+	  path.setAttribute("stroke", colorDictionary["Septenary (7)"]);
+	} else if (index === 7) {
+	  path.setAttribute("stroke", colorDictionary["Octonary (8)"]);
+	} else if (index === 8) {
+	  path.setAttribute("stroke", colorDictionary["Nonary (9)"]);
+	} else if (index === 9) {
+	  path.setAttribute("stroke", colorDictionary["Denary (10)"]);
+	}
+	      
         // Append the path to the newSvg element
         newSvg.appendChild(path);
       }
