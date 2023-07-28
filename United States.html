@@ -35,6 +35,8 @@
   <button id="eraserButton" onclick="eraser()">Eraser</button>
   <label for="fontSizeInput">Font Size:</label>
   <input type="number" id="fontSizeInput" name="fontSizeInput" value="30" min="1" max="100">
+<label for="distanceOffsetInput">Distance Offset:</label>
+<input type="number" id="distanceOffsetInput" name="distanceOffsetInput" value="15" min="15" max="500">
   <button id="stopButton" onclick="button_StopEditing()">Stop Editing</button>
 </div>
 <div>
@@ -184,7 +186,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("1234234")
+console.log("asdfsadf")
 
 	// Define map-specific items
 	var ZombieFile = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20File.csv"
@@ -465,18 +467,21 @@ tableData.forEach((row) => {
 	    // Append the arrow path to the newSVG
 	    newSVG.appendChild(existingArrowPathStart);
 	  } else {
-	    // Draw a new line and add it to the drawnLines dictionary
-	    let offsetStartLocation = perpendicularOffsetPoint(
-	      offsetPoint(endLocation, startLocation, 15),
-	      angle,
-	      indexOffset
-	    );
-	    let offsetEndLocation = perpendicularOffsetPoint(
-	      offsetPoint(startLocation, endLocation, 15),
-	      angle,
-	      indexOffset
-	    );
-	  
+// Get the value of the "Distance Offset" input element
+let distanceOffset = document.getElementById("distanceOffsetInput").value;
+
+// Use the value of the "Distance Offset" input element as the offset for the offsetPoint function
+let offsetStartLocation = perpendicularOffsetPoint(
+  offsetPoint(endLocation, startLocation, distanceOffset),
+  angle,
+  indexOffset
+);
+let offsetEndLocation = perpendicularOffsetPoint(
+  offsetPoint(startLocation, endLocation, distanceOffset),
+  angle,
+  indexOffset
+);
+  
 	    // Create a new path element for the arrow
 	    let arrowPath = document.createElementNS(
 	      "http://www.w3.org/2000/svg",
