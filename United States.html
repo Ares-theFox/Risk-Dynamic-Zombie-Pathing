@@ -184,7 +184,7 @@ window.onload = function() {
 };
 
 // Define global variables
-console.log("23453245")
+console.log("433ar3a")
 
 	// Define map-specific items
 	var ZombieFile = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20Zombie%20File.csv"
@@ -276,9 +276,29 @@ xhr.onload = function () {
     
     // Add the newSVG to the range element
     rangeElement.appendChild(newSVG);
+
+    // Define marker for arrowhead
+    let marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+    marker.setAttribute("id", "arrow");
+    marker.setAttribute("markerWidth", "10");
+    marker.setAttribute("markerHeight", "10");
+    marker.setAttribute("refX", "0");
+    marker.setAttribute("refY", "3");
+    marker.setAttribute("orient", "auto");
+    marker.setAttribute("markerUnits", "strokeWidth");
+
+    // Create path for arrowhead
+    let arrowPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    arrowPath.setAttribute("d", "M0,0 L0,6 L9,3 z");
+    arrowPath.setAttribute("fill", "#f00");
+
+    // Append arrowPath to marker and marker to newSVG
+    marker.appendChild(arrowPath);
+    newSVG.appendChild(marker);
   }
 };
 xhr.send();
+
 
 
 	
@@ -300,27 +320,6 @@ function stopEditing() {
 
 
 	
-
-// Define marker for arrowhead
-let marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
-marker.setAttribute("id", "arrow");
-marker.setAttribute("markerWidth", "10");
-marker.setAttribute("markerHeight", "10");
-marker.setAttribute("refX", "0");
-marker.setAttribute("refY", "3");
-marker.setAttribute("orient", "auto");
-marker.setAttribute("markerUnits", "strokeWidth");
-
-// Create path for arrowhead
-let arrowPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-arrowPath.setAttribute("d", "M0,0 L0,6 L9,3 z");
-arrowPath.setAttribute("fill", "#f00");
-
-// Append arrowPath to marker and marker to newSVG
-marker.appendChild(arrowPath);
-newSVG.appendChild(marker);
-
-
 	
 // Generate the map
 function generateMap() {
