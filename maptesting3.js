@@ -6,127 +6,43 @@ if (urlParams.has('map')) {
 	console.log(urlParams.get('map'));
 }
 
-console.log("2123")
+console.log("zombiiiiies")
 
 const mapUrls = {
-	"boston": {
-		"prettyname": "Boston",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Boston.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Boston%20blizzard%20pattern.png",
-		"totalBlizzards": 3,
-		"totalPortals": 5
-	},
-	"brazil": {
-		"prettyname": "Brazil",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Brazil.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Brazil%20blizzard%20pattern.png",
-		"totalBlizzards": 2,
-		"totalPortals": 4
-	},
-	"brazil_advanced": {
-		"prettyname": "Brazil Advanced",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Brazil%20Advanced.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Brazil%20Advanced%20blizzard%20pattern.png",
-		"totalBlizzards": 5,
-		"totalPortals": 6
-	},
-	"castle": {
-		"prettyname": "Castle",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Castle.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Castle%20blizzard%20pattern.png",
-		"totalBlizzards": 2,
-		"totalPortals": 4
+	"28_turns_later": {
+		"prettyname": "28 Turns Later",
+		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/28%20Turns%20Later.png",
+		"totalBlizzards": 4
 	},
 	"classic": {
 		"prettyname": "Classic",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Classic.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Classic%20blizzard%20pattern.png",
-		"totalBlizzards": 3,
-		"totalPortals": 5
+		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Classic.png",
+		"totalBlizzards": 3
 	},
-	"dino_canyon": {
-		"prettyname": "Dino Canyon",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Dino%20Canyon.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Dino%20Canyon%20blizzard%20pattern.png",
-		"totalBlizzards": 3,
-		"totalPortals": 5
+	"classic_frozen": {
+		"prettyname": "Classic Frozen",
+		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Classic%20Frozen.png",
+		"totalBlizzards": 3
 	},
-	"dicey_trajectories": {
-		"prettyname": "Dicey Trajectories",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Dicey%20Trajectories.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Dicey%20Trajectories%20blizzard%20pattern.png",
-		"totalBlizzards": 2,
-		"totalPortals": 4
+	"greece": {
+		"prettyname": "Greece",
+		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Greece.png",
+		"totalBlizzards": 6
 	},
-	"dino_world": {
-		"prettyname": "Dino World",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Dino%20World.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Dino%20World%20blizzard%20pattern.png",
-		"totalBlizzards": 2,
-		"totalPortals": 4
+	"italy": {
+		"prettyname": "Italy",
+		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Italy.png",
+		"totalBlizzards": 2
 	},
-	"france": {
-		"prettyname": "France",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/France.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/France%20blizzard%20pattern.png",
-		"totalBlizzards": 2,
-		"totalPortals": 4
-	},
-	"jules_verne": {
-		"prettyname": "Jules Verne",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Jules%20Verne.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Jules%20Verne%20blizzard%20pattern.png",
-		"totalBlizzards": 3,
-		"totalPortals": 5
-	},
-	"mother_of_all_boards": {
-		"prettyname": "Mother of all Boards",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Mother%20of%20all%20Boards.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Mother%20of%20all%20Boards%20blizzard%20pattern.png",
-		"totalBlizzards": 2,
-		"totalPortals": 4
-	},
-	"nan_madol": {
-		"prettyname": "Nan Madol",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Nan%20Madol.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Nan%20Madol%20blizzard%20pattern.png",
-		"totalBlizzards": 3,
-		"totalPortals": 5
-	},
-	"roman_empire": {
-		"prettyname": "Roman Empire",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Roman%20Empire.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Roman%20Empire%20blizzard%20pattern.png",
-		"totalBlizzards": 3,
-		"totalPortals": 5
-	},
-	"simple_world": {
-		"prettyname": "Simple World",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Simple%20World.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Simple%20World%20blizzard%20pattern.png",
-		"totalBlizzards": 2,
-		"totalPortals": 4
-	},
-	"supermax_prison": {
-		"prettyname": "Supermax Prison",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Supermax%20Prison.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/Supermax%20Prison%20blizzard%20pattern.png",
-		"totalBlizzards": 3,
-		"totalPortals": 5
+	"orbital_objectives": {
+		"prettyname": "Orbital Objectives",
+		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Orbital%20Objectives%20.png",
+		"totalBlizzards": 4
 	},
 	"united_states": {
 		"prettyname": "United States",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/United%20States.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/United%20States%20blizzard%20pattern.png",
-		"totalBlizzards": 3,
-		"totalPortals": 5
-	},
-	"world_conquest": {
-		"prettyname": "World Conquest",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/World%20Conquest.png",
-		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/World%20Conquest%20blizzard%20pattern.png",
-		"totalBlizzards": 3,
-		"totalPortals": 5
+		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States.png",
+		"totalBlizzards": 3
 	},
 }
 
