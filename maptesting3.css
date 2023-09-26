@@ -104,3 +104,14 @@
 	#addZombie:hover {
 	background-color: #20A220;
 	}
+
+	#removeZombie {
+	text-align: center;
+	background-color: aqua;
+	color: black;
+	}
+
+	#removeZombie:hover {
+	background-color: navy;
+	color: white;
+	}
