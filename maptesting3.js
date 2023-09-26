@@ -6,7 +6,7 @@ if (urlParams.has('map')) {
 	console.log(urlParams.get('map'));
 }
 
-console.log("brains")
+console.log("brains22222")
 
 const mapUrls = {
 	"28_turns_later": {
@@ -111,8 +111,8 @@ window.onload = function() {
 
 // Set initial variables
 var colorLegend = mapUrls[mapselected].prettyname;
-var csvData = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/" + colorLegend + "%20Master%20File.csv";
-var SVG = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/" + colorLegend + "%20Paths.svg";
+var csvData = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/" + colorLegend + "%20Master%20File.csv";
+var SVG = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/" + colorLegend + "%20Paths.svg";
 var BlizzardPattern = blizzardPatternImage.src;
 var totalBlizzards = mapUrls[mapselected].totalBlizzards;
 let blizzardArray = [];
@@ -289,7 +289,7 @@ function executeBlizzards(path, svgElement, BlizzardPattern, tableData) {
 
   // Create an image element and set its attributes
   var snowflakeImage = document.createElementNS("http://www.w3.org/2000/svg", "image");
-  snowflakeImage.setAttributeNS("http://www.w3.org/1999/xlink", "href", "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/snowflake.png");
+  snowflakeImage.setAttributeNS("http://www.w3.org/1999/xlink", "href", "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/snowflake.png");
 
   // Set a custom attribute to store the id of the clicked path
   snowflakeImage.setAttribute("data-path-id", path.id);
@@ -367,7 +367,7 @@ function addBlizzards() {
     if (shouldReturn) {
       return;
     }
-    if (!blizzardArray.includes(this.id) && !portalArray.includes(this.id)) {
+    if (!blizzardArray.includes(this.id)) {
       resetStroke(this, tableData);
     }
   };
@@ -417,7 +417,7 @@ function addBlizzards() {
 
 // FUNCTION: Eraser
 function eraser() {
-  // Immediately return if the blizzard and portal arrays are empty
+  // Immediately return if the blizzard array is empty
   if (blizzardArray.length === 0 && zombieNodes.length === 0) {
     return;
   }
@@ -670,7 +670,7 @@ function generateMap() {
       if (tableData[i]["Territory"] === pathId) {
         // Color in the map
         if (tableData[i]["Blizzard"] === 0) {
-	  var {color, border_color, textContent} = getColorAndTextContent(centralityMenu, tableData, i);
+	  var {color, border_color, textContent} = getColorAndTextContent(tableData, i);
           path.style.setProperty("fill", color, "important");
           path.setAttribute("stroke-opacity", "100");
           path.style.setProperty("stroke", border_color, "important");
@@ -717,7 +717,7 @@ function generateMap() {
   });
 	// Get the base image element & define base URL
 	var baseImage = document.getElementById("map");
-	var baseURL = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/";
+	var baseURL = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/";
 	baseImage.src = baseURL + colorLegend + ".png";
 	
 // Create a mapping of node names to indices
