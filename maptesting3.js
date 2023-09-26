@@ -6,7 +6,7 @@ if (urlParams.has('map')) {
 	console.log(urlParams.get('map'));
 }
 
-console.log("brains22222")
+console.log("3333")
 
 const mapUrls = {
 	"28_turns_later": {
@@ -111,7 +111,7 @@ window.onload = function() {
 
 // Set initial variables
 var colorLegend = mapUrls[mapselected].prettyname;
-var csvData = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/" + colorLegend + "%20Master%20File.csv";
+var csvData = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/" + colorLegend + "%20Zombie%20File.csv";
 var SVG = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/" + colorLegend + "%20Paths.svg";
 var BlizzardPattern = blizzardPatternImage.src;
 var totalBlizzards = mapUrls[mapselected].totalBlizzards;
