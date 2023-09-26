@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="jsnetworkx.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5"></script>
+    <script>console.log("86418468")</script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel='stylesheet' href='maptesting3.css' />
+    <title>Map</title>
+  </head>
+  <body>
+    <header>
+	<span id='mapnametitle'>Mapname</span> Dynamic Disconnection Map 
+	<img src="" />
+        <span id="invalidText" style="color: red; font-style: italic; font-size: 20px;"></span>
+    </header>
+<div>
+  <button id="zoomInButton"><i class="fas fa-search-plus"></i></button>
+  <button id="blizzardButton" onclick="button_AddBlizzards()">Add Blizzards</button>
+  <button id="eraserButton" onclick="eraser()">Eraser</button>
+  <label for="fontSizeInput">Font Size:</label>
+  <input type="number" id="fontSizeInput" name="fontSizeInput" value="30" min="1" max="100">
+  <button id="stopButton" onclick="button_StopEditing()">Stop Editing</button>
+</div>
+<div>
+  <button id="zoomOutButton"><i class="fas fa-search-minus"></i></button>
+  <button id="portalButton" onclick="button_AddPortals()">Add Portals</button>
+  <button id="undoButton" onclick="button_Undo()">Undo</button>
+  <button id="resetButton">Reset Map</button>
+  <button id="mapDirectoryButton">Map Directory</button>
+  <div id="selectMenuContainer" style="display: inline-block;">
+    <label for="centralityType">Centrality:</label>
+    <select id="centralityType" name="centralityType">
+      <option value="standard">Direct Connections</option>
+      <option value="eigenvector">Eigenvector</option>
+      <option value="betweenness">Betweenness</option>
+      <option value="closeness">Closeness</option>
+      <option value="capConnections">Cap Connections</option>
+      <option value="boardstate">Board State</option>
+    </select>
+  </div>
+  <div id="boardstateContainer" style="display: inline-block;">
+    <button id="addWhite" onclick="button_AddWhite()">White</button>
+    <button id="addBlack" onclick="button_AddBlack()">Black</button>
+    <button id="addRed" onclick="button_AddRed()">Red</button>
+    <button id="addPink" onclick="button_AddPink()">Pink</button>
+    <button id="addPurple" onclick="button_AddPurple()">Purple</button>
+    <button id="addBlue" onclick="button_AddBlue()">Blue</button>
+    <button id="addGreen" onclick="button_AddGreen()">Green</button>
+    <button id="addYellow" onclick="button_AddYellow()">Yellow</button>
+    <button id="addOrange" onclick="button_AddOrange()">Orange</button>
+  <br>
+  <label for="troopInput">Troops to add:</label>
+  <input type="number" id="troopInput" name="troopInput" value="1" min="1" max="1000">
+  <button id="troopInputButton" onclick="button_PlaceTroops()">Place Troops</button>
+  </div>
+</div>	  
+    <img id="map" src=""/>
+    <div id="range"></div>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5"></script>
+    <script src="maptesting3.js"></script>
+</body>
+</html>
