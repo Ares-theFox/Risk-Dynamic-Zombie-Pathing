@@ -96,6 +96,7 @@
 
 
 	#addZombie {
+	width: 180px;
 	text-align: center;
 	background-color: #33FF33;
 	color: black;
