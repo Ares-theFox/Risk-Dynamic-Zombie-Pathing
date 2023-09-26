@@ -6,7 +6,7 @@ if (urlParams.has('map')) {
 	console.log(urlParams.get('map'));
 }
 
-console.log("zombiiiiies")
+console.log("brains")
 
 const mapUrls = {
 	"28_turns_later": {
@@ -81,7 +81,7 @@ var mapDirectoryButton = document.getElementById("mapDirectoryButton");
 // Add an event listener to the button that listens for the "click" event
 mapDirectoryButton.addEventListener("click", function() {
   // Open the URL in a new tab when the button is clicked
-  window.open("https://ares-thefox.github.io/Risk-Dynamic-Disconnection-Maps/testingpage3.html", "_blank");
+  window.open("https://ares-thefox.github.io/Risk-Dynamic-Zombie-Pathing/testingpage3.html", "_blank");
 });
 
 var images = [
@@ -112,61 +112,16 @@ window.onload = function() {
 // Set initial variables
 var colorLegend = mapUrls[mapselected].prettyname;
 var csvData = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/" + colorLegend + "%20Master%20File.csv";
-var atkData = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/atkmin_DDM.csv";
 var SVG = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/" + colorLegend + "%20Paths.svg";
 var BlizzardPattern = blizzardPatternImage.src;
 var totalBlizzards = mapUrls[mapselected].totalBlizzards;
-var totalPortals = mapUrls[mapselected].totalPortals;
 let blizzardArray = [];
-let portalArray = [];
 let history = [];
-let whiteNodes = [];
-let blackNodes = [];
-let redNodes = [];
-let pinkNodes = [];
-let purpleNodes = [];
-let blueNodes = [];
-let greenNodes = [];
-let yellowNodes = [];
-let orangeNodes = [];
-let TroopArray = [];
-const colorDictionary = {
-  0: "#ffffff",
-  1: "#eb3337",
-  2: "#fd8238",
-  3: "#fdf12c",
-  4: "#2ed14f",
-  5: "#2ca9f1",
-  6: "#4a51cc",
-  7: "#b948ba",
-  8: "#8b2c32",
-  9: "#5f5f5f",
- 10: "#377a46",
- 11: "#460055",
- 12: "#161616"
-};
-const colorDarktionary = {
- 0: "#808080",
- 1: "#761a1c",
- 2: "#7f411c",
- 3: "#7f7916",
- 4: "#176928",
- 5: "#165579",
- 6: "#252966",
- 7: "#5d245d",
- 8: "#461619",
- 9: "#303030",
-10: "#1c3d23",
-11: "#23002b",
-12: "#000000"
-};
+let zombieNodes = [];
 
 // Button functions
 function button_AddBlizzards() {
   addBlizzards();
-}
-function button_AddPortals() {
-  addPortals();
 }
 function button_StopEditing() {
   stopEditing();
@@ -174,96 +129,11 @@ function button_StopEditing() {
 function button_Undo() {
   undo();
 }
-function button_AddWhite() {
-  AddColorFunction('White');
-}
-function button_AddBlack() {
-  AddColorFunction('Black');
-}
-function button_AddRed() {
-  AddColorFunction('Red');
-}
-function button_AddPink() {
-  AddColorFunction('Pink');
-}
-function button_AddPurple() {
-  AddColorFunction('Purple');
-}
-function button_AddBlue() {
-  AddColorFunction('Blue');
-}
-function button_AddGreen() {
-  AddColorFunction('Green');
-}
-function button_AddYellow() {
-  AddColorFunction('Yellow');
-}
-function button_AddOrange() {
-  AddColorFunction('Orange');
-}
-function button_PlaceTroops() {
-  PlaceTroopsFunction();
+function button_AddZombie() {
+  AddZombieFunction();
 }
 
-const buttons = ["blizzardButton", "portalButton", "eraserButton", "stopButton", "addWhite", "addBlack", "addRed", "addPink", "addPurple", "addBlue", "addGreen", "addYellow", "addOrange", "troopInputButton"];
-
-// Troop counts
-let troopInput = document.getElementById('troopInput');
-let currentTroopValue = parseInt(troopInput.value);
-troopInput.addEventListener('input', function() {
-  currentTroopValue = parseInt(this.value);
-});
-
-
-// Menu stuff
-var selectMenuContainer = document.getElementById("selectMenuContainer");
-selectMenuContainer.style.display = "none";
-centralityMenu = document.getElementById("centralityType");
-
-var boardstateMenuContainer = document.getElementById("boardstateContainer");
-boardstateMenuContainer.style.display = "none";
-centralityMenu.addEventListener("change", function() {
-  generateMap();
-  if (centralityMenu.value === "boardstate") {
-    boardstateMenuContainer.style.display = "";
-  }
-});
-
-// Hidden menu shenanigans
-var sequence = [
-  { button: "blizzardButton", count: totalBlizzards },
-  { button: "portalButton", count: totalPortals }
-];
-var sequenceIndex = 0;
-var sequenceCount = 0;
-var sequenceCompleted = false;
-sequence.forEach(function (item) {
-  var button = document.getElementById(item.button);
-  var clickHandler = function () {
-    // Check if the sequence has been completed
-    if (sequenceCompleted) {
-      // If it has, remove the event listener for this button
-      button.removeEventListener("click", clickHandler);
-    } else {
-      if (item.button === sequence[sequenceIndex].button) {
-	sequenceCount++;
-	if (sequenceCount === item.count) {
-	  sequenceIndex++;
-	  sequenceCount = 0;
-	}
-      } else {
-	sequenceIndex = 0;
-	sequenceCount = 0;
-      }
-      if (sequenceIndex === sequence.length) {
-	selectMenuContainer.style.display = "";
-	// Set the flag to true once the sequence is completed
-	sequenceCompleted = true;
-      }
-    }
-  };
-  button.addEventListener("click", clickHandler);
-});
+const buttons = ["blizzardButton", "eraserButton", "stopButton", "addZombie"];
 
 // Load the CSVs and push to tableData
 let tableData;
@@ -301,27 +171,6 @@ Papa.parse(
       tableData = filteredTableData;
       tableDataClone = JSON.parse(JSON.stringify(tableData));
       onRequestComplete();
-    },
-  }
-);
-
-let atkMin;
-Papa.parse(
-  atkData,
-  {
-    download: true,
-    header: true,
-    complete: function (results) {
-      // Assign parsed data to atkMin
-      atkMin = results.data;
-      // Remove zero-width space character from atkMin
-      for (let i = 0; i < atkMin.length; i++) {
-	for (let key in atkMin[i]) {
-	  if (atkMin[i].hasOwnProperty(key)) {
-	    atkMin[i][key] = atkMin[i][key].replace(/\u200B/g, "");
-	  }
-	}
-      }
     },
   }
 );
@@ -369,13 +218,6 @@ function updateButtonText() {
   } else {
     document.getElementById("blizzardButton").innerHTML = "Add Blizzards (" + (totalBlizzards - blizzardArray.length) + " left)";
   }
-
-  // Update "Add Portals" button text
-  if (totalPortals - portalArray.length <= 0) {
-    document.getElementById("portalButton").innerHTML = "Added all Portals";
-  } else {
-    document.getElementById("portalButton").innerHTML = "Add Portals (" + (totalPortals - portalArray.length) + " left)";
-  }
 }
 
 // FUNCTION: stop editing
@@ -393,224 +235,6 @@ function stopEditing() {
   return;
 }
 
-// FUNCTION: calculate centrality
-function stats(values) {
-    let sum = 0;
-    let count = 0;
-    for (let value of values) {
-        if (value !== undefined) {
-            sum += value;
-            count += 1;
-        }
-    }
-    let mean = sum / count;
-    let squaredDifferences = values.map(value => {
-        if (value !== undefined) {
-            let difference = value - mean;
-            return difference * difference;
-        }
-    });
-    let squaredDifferencesSum = 0;
-    for (let squaredDifference of squaredDifferences) {
-        if (squaredDifference !== undefined) {
-            squaredDifferencesSum += squaredDifference;
-        }
-    }
-    let stdDev = Math.sqrt(squaredDifferencesSum / count);
-    return {mean: mean, stdDev: stdDev};
-}
-
-function rgbToHex(rgb) {
-    return "#" + rgb.map(x => x.toString(16).padStart(2, "0")).join("");
-}
-
-function calculateColor(tableData, columnName, stats) {
-    let min = stats.mean - stats.stdDev;
-    let max = stats.mean + stats.stdDev;
-    let minColor = [0xFF, 0xED, 0x01];
-    let maxColor = [0xCC, 0x00, 0x00];
-    let aboveColor = [0x00, 0x00, 0x00];
-    let belowColor = [0xFF, 0xFF, 0xFF];
-
-    tableData.forEach(row => {
-        let value = row[columnName];
-        if (value >= min && value <= max) {
-            // Calculate the rank of the value within the stdev range
-            let withinValues = tableData.filter(row => row[columnName] >= min && row[columnName] <= max).map(row => row[columnName]);
-            withinValues.sort((a, b) => a - b);
-            let rank = withinValues.indexOf(value);
-            // Calculate the position of the value based on its rank
-            let position = rank / (withinValues.length - 1);
-            // Calculate the color as a linear interpolation between minColor and maxColor
-            let color = minColor.map((c, i) => Math.round(c + position * (maxColor[i] - c)));
-            row[columnName + " Color"] = rgbToHex(color);
-            // Calculate the border color as the midpoint between the color and black
-            let borderColor = color.map(c => Math.round(c / 2));
-            row[columnName + " Border Color"] = rgbToHex(borderColor);
-        } else if (value > max) {
-            // Calculate the rank of the value above the stdev range
-            let aboveValues = tableData.filter(row => row[columnName] > max).map(row => row[columnName]);
-            aboveValues.sort((a, b) => a - b);
-            let rank = aboveValues.indexOf(value);
-            // Calculate the position of the value based on its rank
-            let position = rank / (aboveValues.length - 1);
-            // Calculate the color as a linear interpolation between maxColor and aboveColor
-            let color = maxColor.map((c, i) => Math.round(c + position * (aboveColor[i] - c)));
-            row[columnName + " Color"] = rgbToHex(color);
-            // Calculate the border color as the midpoint between the color and black
-            let borderColor = color.map(c => Math.round(c / 2));
-            row[columnName + " Border Color"] = rgbToHex(borderColor);
-
-            // Push a 1 to the new column for this row
-            row[columnName + " Above STDEV"] = 1;
-        } else if (value < min) {
-            // Calculate the rank of the value below the stdev range
-            let belowValues = tableData.filter(row => row[columnName] < min).map(row => row[columnName]);
-            belowValues.sort((a, b) => a - b);
-            let rank = belowValues.indexOf(value);
-            // Calculate the position of the value based on its rank
-            let position = rank / (belowValues.length - 1);
-            // Calculate the color as a linear interpolation between belowColor and minColor
-            let color = belowColor.map((c, i) => Math.round(c + position * (minColor[i] - c)));
-            row[columnName + " Color"] = rgbToHex(color);
-            // Calculate the border color as the midpoint between the color and black
-            let borderColor = color.map(c => Math.round(c / 2));
-            row[columnName + " Border Color"] = rgbToHex(borderColor);
-
-        }
-
-        // Push a 0 to the new column for this row if it is not already set to 1
-        if (!row.hasOwnProperty(columnName + " Above STDEV")) {
-          row[columnName + " Above STDEV"] = 0;
-        }
-    });
-}
-
-function calculateEigenvector(tableData) {
-    let G = new jsnx.Graph();
-    tableData.forEach((row, i) => {
-        G.addNode(row["Territory"]);
-        let connections = row["Connections"].split(",");
-        connections.forEach(connection => {
-            G.addEdge(row["Territory"], connection);
-        });
-    });
-    let ec = jsnx.eigenvectorCentrality(G,{maxIter:500});
-    let eigenvectorValues = [];
-    tableData.forEach((row, i) => {
-        let eigenvector = ec.get(row["Territory"]);
-        row["Eigenvector"] = eigenvector;
-	    row["Eigenvector Rounded"] = Math.round(eigenvector * 1000) / 10;
-        eigenvectorValues.push(eigenvector);
-    });
-
-    // Calculate the average and standard deviation of the "Eigenvector" values
-    let eigenvectorStats = stats(eigenvectorValues);
-
-    // Calculate the hex color for each row based on the "Eigenvector" value
-    calculateColor(tableData, "Eigenvector", eigenvectorStats);
-}
-
-function calculateBetweenness(tableData) {
-    let G = new jsnx.Graph();
-    tableData.forEach((row, i) => {
-        G.addNode(row["Territory"]);
-        let connections = row["Connections"].split(",");
-        connections.forEach(connection => {
-            G.addEdge(row["Territory"], connection);
-        });
-    });
-    let bc = jsnx.betweennessCentrality(G);
-    let betweennessValues = [];
-    tableData.forEach((row, i) => {
-        let betweenness = bc.get(row["Territory"]);
-        row["Betweenness"] = betweenness;
-	    row["Betweenness Rounded"] = Math.round(betweenness * 1000) / 10;
-        betweennessValues.push(betweenness);
-    });
-    // Calculate the hex color for each row based on the "Betweenness" value
-    let betweennessStats = stats(betweennessValues);
-    calculateColor(tableData, "Betweenness", betweennessStats);
-}
-
-function calculateCloseness(tableData) {
-    // Create a list of unique territories
-    let territories = [];
-    for (let i = 0; i < tableData.length; i++) {
-        if (tableData[i]['Connections'] !== '' && !territories.includes(tableData[i]['Territory'])) {
-            territories.push(tableData[i]['Territory']);
-        }
-    }
-    // Create an empty adjacency matrix
-    let adjacencyMatrix = [];
-    for (let i = 0; i < territories.length; i++) {
-        adjacencyMatrix.push(new Array(territories.length).fill(0));
-    }
-    // Populate the adjacency matrix
-    for (let i = 0; i < tableData.length; i++) {
-        if (tableData[i]['Connections'] !== undefined && tableData[i]['Connections'] !== '') {
-            let territory = tableData[i]['Territory'];
-            let connections = tableData[i]['Connections'].split(',');
-            for (let j = 0; j < connections.length; j++) {
-                let connection = connections[j];
-                if (connection !== '') {
-                    let index1 = territories.indexOf(territory);
-                    let index2 = territories.indexOf(connection);
-                    adjacencyMatrix[index1][index2] = 1;
-                }
-            }
-        }
-    }
-    // Calculate the shortest paths between all pairs of nodes using the Floyd-Warshall algorithm
-    let dist = [];
-    for (let i = 0; i < adjacencyMatrix.length; i++) {
-        dist[i] = [];
-        for (let j = 0; j < adjacencyMatrix.length; j++) {
-            if (i === j) {
-                dist[i][j] = 0;
-            } else if (adjacencyMatrix[i][j]) {
-                dist[i][j] = adjacencyMatrix[i][j];
-            } else {
-                dist[i][j] = Infinity;
-            }
-        }
-    }
-    for (let k = 0; k < adjacencyMatrix.length; k++) {
-        for (let i = 0; i < adjacencyMatrix.length; i++) {
-            for (let j = 0; j < adjacencyMatrix.length; j++) {
-                if (dist[i][k] + dist[k][j] < dist[i][j]) {
-                    dist[i][j] = dist[i][k] + dist[k][j];
-                }
-            }
-        }
-    }
-    // Calculate the closeness centrality of each node
-	let closenessValues= {};
-	for(let i=0;i<territories.length;i++){
-		let sumOfDistances=0;
-		for(let j=0;j<territories.length;j++){
-			sumOfDistances+=dist[i][j];
-		}
-		closenessValues[territories[i]]=(1/sumOfDistances);
-	}
-	for(let key in closenessValues){
-		closenessValues[key]=Math.round(closenessValues[key]*10000)/10;
-	}
-	tableData.forEach((row, i) => {
-	    row["Closeness"] = closenessValues[row["Territory"]];
-	    row["Closeness Rounded"] = Math.round(row["Closeness"] * 10) / 10;
-	});
-    // Calculate the hex color for each row based on the "Closeness" value
-    let closenessStats = stats(Object.values(closenessValues));
-    calculateColor(tableData, "Closeness", closenessStats);
-}
-
-function calculateCentrality(tableData) {
-    calculateEigenvector(tableData);
-    calculateBetweenness(tableData);
-    calculateCloseness(tableData);
-}  
-
 // Function to change stroke color and width upon mouseover
 const highlightStroke = function(element) {
   element.style.setProperty("stroke", "white", "important");
@@ -618,57 +242,17 @@ const highlightStroke = function(element) {
 }
 
 // Function to reset stroke color and width according to the selected centrality measure
-const resetStroke = function(element, centralityMenu, tableData, colorDarktionary) {
-  let border_color;
-  if (centralityMenu.value === "standard") {
-    let value = tableData.find(row => row['Territory'] === element.id)['Number of Direct Connections'];
-    border_color = colorDarktionary[value];
-  } else if (centralityMenu.value === "eigenvector") {
-    border_color = tableData.find(row => row['Territory'] === element.id)['Eigenvector Border Color'];
-  } else if (centralityMenu.value === "betweenness") {
-    border_color = tableData.find(row => row['Territory'] === element.id)['Betweenness Border Color'];
-  } else if (centralityMenu.value === "closeness") {
-    border_color = tableData.find(row => row['Territory'] === element.id)['Closeness Border Color'];
-  } else if (centralityMenu.value === "capConnections") {
-    let value = tableData.find(row => row['Territory'] === element.id)['Number of Cap Connections'];
-    border_color = colorDarktionary[Math.min(value, 12)];
-  } else if (centralityMenu.value === "boardstate") {
-    border_color = tableData.find(row => row['Territory'] === element.id)['Ownership Border Color'];
-  }
+const resetStroke = function(element, tableData) {
+  let border_color = tableData.find(row => row['Territory'] === element.id)['Ownership Border Color'];
   element.style.setProperty("stroke", border_color, "important");
   element.style.setProperty("stroke-width", "2", "important");
 }
 
 // Function to define color, border color, and text for function generateMap
-function getColorAndTextContent(centralityMenu, tableData, i) {
-  var color, border_color, textContent;
-
-  if (centralityMenu.value === "standard") {
-    color = colorDictionary[tableData[i]["Number of Direct Connections"]];
-    border_color = colorDarktionary[tableData[i]["Number of Direct Connections"]];
-    textContent = tableData[i]["Number of Indirect Connections"];
-  } else if (centralityMenu.value === "eigenvector") {
-    color = tableData[i]["Eigenvector Color"];
-    border_color = tableData[i]["Eigenvector Border Color"];
-    textContent = tableData[i]["Eigenvector Rounded"];
-  } else if (centralityMenu.value === "betweenness") {
-    color = tableData[i]["Betweenness Color"];
-    border_color = tableData[i]["Betweenness Border Color"];
-    textContent = tableData[i]["Betweenness Rounded"];
-  } else if (centralityMenu.value === "closeness") {
-    color = tableData[i]["Closeness Color"];
-    border_color = tableData[i]["Closeness Border Color"];
-    textContent = tableData[i]["Closeness Rounded"];
-  } else if (centralityMenu.value === "capConnections") {
-    color = colorDictionary[Math.min(tableData[i]["Number of Cap Connections"], 12)];
-    border_color = colorDarktionary[Math.min(tableData[i]["Number of Cap Connections"], 12)];
-    textContent = tableData[i]["Number of Cap Connections"];
-  } else if (centralityMenu.value === "boardstate") {
-    color = tableData[i]["Ownership Color"];
-    border_color = tableData[i]["Ownership Border Color"];
-    textContent = tableData[i]["Troops"];
-  }
-
+function getColorAndTextContent(tableData, i) {
+  var color = tableData[i]["Ownership Color"];
+  var border_color = tableData[i]["Ownership Border Color"];
+  var textContent = tableData[i]["Priority"];
   return {color, border_color, textContent};
 }
 
@@ -743,52 +327,6 @@ path.style.setProperty("stroke", "white", "important");
 path.style.setProperty("stroke-width", "1", "important");
 }
 	
-// Function to add portal image
-function executePortals(path, svgElement, tableData) {
-  // Create an image element and set its attributes
-  var image = document.createElementNS("http://www.w3.org/2000/svg", "image");
-  image.setAttributeNS("http://www.w3.org/1999/xlink", "href", "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/portal.png");
-
-  // Set a custom attribute to store the id of the clicked path
-  image.setAttribute("data-path-id", path.id);
-
-  // Find matching row in CSV data
-  var coordinates = tableData.find(function (row) {
-    return row["Territory"] === path.id;
-  });
-
-  // Get coordinates from CSV data
-  var x = coordinates["Pixel Pair 1"];
-  var y = coordinates["Pixel Pair 2"];
-
-  // Set pointer-events attribute of the image element to none
-  image.setAttribute("pointer-events", "none");
-
-  // Append the image to the SVG
-  svgElement.appendChild(image);
-
-  // Add an event listener to the image element to update its x and y attributes after it has been loaded
-  image.addEventListener("load", function() {
-    // Get the bounding box of the image element
-    var bbox = image.getBBox();
-
-    // Update the x and y attributes of the image element to center it over the clicked area
-    image.setAttribute("x", x - bbox.width / 2);
-    image.setAttribute("y", y - bbox.height / 2);
-
-    // Rotate the image a random number of degrees between 0 and 359 around its center point
-    var angle = Math.floor(Math.random() * 360);
-    var cx = x;
-    var cy = y;
-    image.setAttribute(
-      "transform",
-      "rotate(" + angle + " " + cx + " " + cy + ")"
-    );
-    
-    return image;
-});
-}
-
 // Function to handle user-added blizzards
 function addBlizzards() {
   document.getElementById("stopButton").innerHTML = "Stop Adding Blizzards";
@@ -820,7 +358,7 @@ function addBlizzards() {
     if (shouldReturn) {
       return;
     }
-    if (!blizzardArray.includes(this.id) && !portalArray.includes(this.id)) {
+    if (!blizzardArray.includes(this.id)) {
       highlightStroke(this);
     }
   };
@@ -830,7 +368,7 @@ function addBlizzards() {
       return;
     }
     if (!blizzardArray.includes(this.id) && !portalArray.includes(this.id)) {
-      resetStroke(this, centralityMenu, tableData, colorDarktionary);
+      resetStroke(this, tableData);
     }
   };
 	
@@ -838,19 +376,9 @@ function addBlizzards() {
     if (shouldReturn) {
       return;
     }
-    if (!blizzardArray.includes(this.id) && !portalArray.includes(this.id)) {
-      whiteNodes = whiteNodes.filter(id => id !== this.id);
-      blackNodes = blackNodes.filter(id => id !== this.id);
-      redNodes = redNodes.filter(id => id !== this.id);
-      pinkNodes = pinkNodes.filter(id => id !== this.id);
-      purpleNodes = purpleNodes.filter(id => id !== this.id);
-      blueNodes = blueNodes.filter(id => id !== this.id);
-      greenNodes = greenNodes.filter(id => id !== this.id);
-      yellowNodes = yellowNodes.filter(id => id !== this.id);
-      orangeNodes = orangeNodes.filter(id => id !== this.id); 
-	    
+    if (!blizzardArray.includes(this.id)) {
+      zombieNodes = zombieNodes.filter(id => id !== this.id);   
       blizzardArray.push(this.id);
-      TroopArray = TroopArray.filter(obj => obj.pathId !== this.id);
       history.push({ type: 'addBlizzard', pathId: this.id });
 	    
       // Check if size of blizzardArray is greater than or equal to totalBlizzards
@@ -887,97 +415,10 @@ function addBlizzards() {
   });
 }
 
-// Function to handle user-added portals
-function addPortals() {
-  document.getElementById("stopButton").innerHTML = "Stop Adding Portals";
-  document.getElementById("stopButton").style.backgroundColor = "#4caf50";
-  
-  var styleElement = document.createElement("style");
-  styleElement.id = "stopButtonHoverStyle";
-  styleElement.textContent = "#stopButton:hover { background-color: #3e8e41 !important; }";
-  document.head.appendChild(styleElement);
-
-  let shouldReturn = false;
-	
-  const buttonClick = function () {
-    shouldReturn = true;
-  };
-
-  buttons.forEach(button => {
-    document.getElementById(button).addEventListener("click", buttonClick);
-  });
-	
-  // Check if size of blizzardArray is greater than or equal to totalBlizzards
-  if (portalArray.length >= totalPortals) {
-    // Return early from the function
-    return;
-  }
-
-  // Define mouseover, mouseout, and click event handlers
-  const mouseoverHandler = function () {
-    if (shouldReturn) {
-      return;
-    }
-    if (!blizzardArray.includes(this.id) && !portalArray.includes(this.id)) {
-      highlightStroke(this);
-    }
-  };
-	
-  const mouseoutHandler = function () {
-    if (shouldReturn) {
-      return;
-    }
-    if (!blizzardArray.includes(this.id) && !portalArray.includes(this.id)) {
-      resetStroke(this, centralityMenu, tableData, colorDarktionary);
-    }
-  };
-	
-  const clickHandler = function () {
-    if (shouldReturn) {
-      return;
-    }
-    if (!blizzardArray.includes(this.id) && !portalArray.includes(this.id)) {
-      portalArray.push(this.id);
-      history.push({ type: 'addPortal', pathId: this.id });
-	    
-      // Check if size of portalArray is greater than or equal to totalPortals
-      if (portalArray.length >= totalPortals) {
-        // Remove existing event listeners from elements in paths array
-        paths.forEach(function (path) {
-          path.removeEventListener("mouseover", mouseoverHandler);
-          path.removeEventListener("mouseout", mouseoutHandler);
-          path.removeEventListener("click", clickHandler);
-        });
-
-        document.getElementById("stopButton").innerHTML = "Stop Editing";
-	document.getElementById("stopButton").style.backgroundColor = "white"
-	      
-	var styleElement = document.createElement("style");
-	styleElement.id = "stopButtonHoverStyle";
-	styleElement.textContent = "#stopButton:hover { background-color: white !important; }";
-	document.head.appendChild(styleElement);
-
-        generateMap();
-        return;
-      }
-
-      // Execute generateMap function
-      generateMap();
-    }
-  };
-
-  // Add event listeners to elements in paths array
-  paths.forEach(function (path) {
-    path.addEventListener("mouseover", mouseoverHandler);
-    path.addEventListener("mouseout", mouseoutHandler);
-    path.addEventListener("click", clickHandler);
-  });
-}
-
 // FUNCTION: Eraser
 function eraser() {
   // Immediately return if the blizzard and portal arrays are empty
-  if (blizzardArray.length === 0 && portalArray.length === 0) {
+  if (blizzardArray.length === 0 && zombieNodes.length === 0) {
     return;
   }
 
@@ -1004,7 +445,7 @@ function eraser() {
     if (shouldReturn) {
       return;
     }
-    if (blizzardArray.includes(this.id) || portalArray.includes(this.id)) {
+    if (blizzardArray.includes(this.id) || zombieNodes.includes(this.id)) {
       this.style.setProperty("stroke", "#ff1111", "important");
       this.style.setProperty("stroke-width", "4", "important");
     }
@@ -1017,8 +458,9 @@ function eraser() {
     if (blizzardArray.includes(this.id)) {
       this.style.setProperty("stroke", "white", "important");
       this.style.setProperty("stroke-width", "1", "important");
-    } else if (portalArray.includes(this.id)) {
-      resetStroke(this, centralityMenu, tableData, colorDarktionary);
+    } else if (zombieNodes.includes(this.id)) {
+      this.style.setProperty("stroke", "#20A220", "important");
+      this.style.setProperty("stroke-width", "2", "important");
     }
   };
 
@@ -1030,14 +472,13 @@ function eraser() {
       blizzardArray = blizzardArray.filter((path) => path !== this.id);
       history.push({ type: 'eraseBlizzard', pathId: this.id });
       generateMap();
-    } else if (portalArray.includes(this.id)) {
-      portalArray = portalArray.filter((path) => path !== this.id);
-      history.push({ type: 'erasePortal', pathId: this.id });
+    } else if (zombieNodes.includes(this.id)) {
+      zombieNodes = zombieNodes.filter((path) => path !== this.id);
       generateMap();
     }
 
     // Check if size of blizzardArray is greater than or equal to totalBlizzards
-    if (blizzardArray.length === 0 && portalArray.length === 0) {
+    if (blizzardArray.length === 0 && zombieNodes.length === 0) {
       // Remove existing event listeners from elements in paths array
       paths.forEach(function (path) {
         path.removeEventListener("mouseover", mouseoverHandler);
@@ -1077,17 +518,9 @@ function undo() {
       // Remove the last blizzard from the blizzardArray
       blizzardArray.pop();
       generateMap();
-    } else if (lastAction.type === 'addPortal') {
-      // Remove the last portal from the portalArray
-      portalArray.pop();
-      generateMap();
     } else if (lastAction.type === 'eraseBlizzard') {
       // Add the erased path back to the blizzard array
       blizzardArray.push(lastAction.pathId);
-      generateMap();
-    } else if (lastAction.type === 'erasePortal') {
-      // Add the erased path back to the portal array
-      portalArray.push(lastAction.pathId);
       generateMap();
     }
   }
@@ -1102,9 +535,9 @@ document.addEventListener('keydown', function(event) {
   }
 });
 
-// Function to assign ownership
-function AddColorFunction(color) {
-  document.getElementById("stopButton").innerHTML = "Stop Assigning " + color;
+// Function to add zombies
+function AddZombieFunction(color) {
+  document.getElementById("stopButton").innerHTML = "Stop Adding Zombies"
   document.getElementById("stopButton").style.backgroundColor = "#4caf50";
   
   var styleElement = document.createElement("style");
@@ -1137,7 +570,7 @@ function AddColorFunction(color) {
       return;
     }
     if (!blizzardArray.includes(this.id)) {
-      resetStroke(this, centralityMenu, tableData, colorDarktionary);
+      resetStroke(this, tableData);
     }
   };
 	
@@ -1146,37 +579,8 @@ function AddColorFunction(color) {
       return;
     }
     if (!blizzardArray.includes(this.id)) {
-      whiteNodes = whiteNodes.filter(id => id !== this.id);
-      blackNodes = blackNodes.filter(id => id !== this.id);
-      redNodes = redNodes.filter(id => id !== this.id);
-      pinkNodes = pinkNodes.filter(id => id !== this.id);
-      purpleNodes = purpleNodes.filter(id => id !== this.id);
-      blueNodes = blueNodes.filter(id => id !== this.id);
-      greenNodes = greenNodes.filter(id => id !== this.id);
-      yellowNodes = yellowNodes.filter(id => id !== this.id);
-      orangeNodes = orangeNodes.filter(id => id !== this.id);
-      
-      // Here we use the color parameter to decide which array to add the node to
-      if (color === "White") {
-        whiteNodes.push(this.id);
-      } else if (color === "Black") {
-        blackNodes.push(this.id);
-      } else if (color === "Red") {
-        redNodes.push(this.id);
-      } else if (color === "Pink") {
-        pinkNodes.push(this.id);
-      } else if (color === "Purple") {
-        purpleNodes.push(this.id);
-      } else if (color === "Blue") {
-        blueNodes.push(this.id);
-      } else if (color === "Green") {
-        greenNodes.push(this.id);
-      } else if (color === "Yellow") {
-        yellowNodes.push(this.id);
-      } else if (color === "Orange") {
-        orangeNodes.push(this.id);
-      }
-
+      zombieNodes.push(this.id);
+	    
       // Execute generateMap function
       generateMap();
     }
@@ -1189,73 +593,6 @@ function AddColorFunction(color) {
     path.addEventListener("click", clickHandler);
   });
 }
-
-// Function to place troops
-function PlaceTroopsFunction() {
-  document.getElementById("stopButton").innerHTML = "Stop Placing Troops";
-  document.getElementById("stopButton").style.backgroundColor = "#4caf50";
-
-  var styleElement = document.createElement("style");
-  styleElement.id = "stopButtonHoverStyle";
-  styleElement.textContent = "#stopButton:hover { background-color: #3e8e41 !important; }";
-  document.head.appendChild(styleElement);
-
-  let shouldReturn = false;
-
-  const buttonClick = function () {
-    shouldReturn = true;
-  };
-
-  buttons.forEach(button => {
-    document.getElementById(button).addEventListener("click", buttonClick);
-  });
-
-  // Define mouseover, mouseout, and click event handlers
-  const mouseoverHandler = function () {
-    if (shouldReturn) {
-      return;
-    }
-    if (!blizzardArray.includes(this.id)) {
-      highlightStroke(this);
-    }
-  };
-
-  const mouseoutHandler = function () {
-    if (shouldReturn) {
-      return;
-    }
-    if (!blizzardArray.includes(this.id)) {
-      resetStroke(this, centralityMenu, tableData, colorDarktionary);
-    }
-  };
-
-  const clickHandler = function () {
-    if (shouldReturn) {
-      return;
-    }
-    if (!blizzardArray.includes(this.id)) {
-      let existingObject = TroopArray.find(obj => obj.pathId === this.id);
-      if (existingObject) {
-        existingObject.value = currentTroopValue;
-      } else {
-      TroopArray.push({
-        pathId: this.id,
-        value: currentTroopValue
-      });
-      }
-      generateMap();
-    }
-  };
-
-  // Add event listeners to elements in paths array
-  paths.forEach(function (path) {
-    path.addEventListener("mouseover", mouseoverHandler);
-    path.addEventListener("mouseout", mouseoutHandler);
-    path.addEventListener("click", clickHandler);
-  });
-}
-
-
 
 // ------------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------------
@@ -1302,136 +639,17 @@ function generateMap() {
 	    }
 	  }
 	});
-	
-  	// Add everything contained in the portal array
-	tableData.forEach((row) => {
-	  if (portalArray.includes(row["Territory"])) {
-	    row["Portal"] = 1;
-	    row["Connections"] = [
-	      ...new Set([
-		...(row["Connections"] ? row["Connections"].split(",") : []),
-		...portalArray,
-	      ]),
-	    ]
-	      .filter((value) => value !== row["Territory"])
-	      .join(",");
-	  } else {
-	    row["Portal"] = 0;
-	  }
-	});
 
     // Calculate new columns
     tableData.forEach((row) => {
-      // Non-Unique Indirect Connections: vlookup Connections values and add them + current Territory & Connections
-      if (row["Blizzard"] === 0 && row["Connections"] !== "") {
-        const searchValues = row["Connections"].split(",");
-        let searchResults = [];
-        for (const searchValue of searchValues) {
-          for (let i = 0; i < tableData.length; i++) {
-            if (tableData[i]["Territory"] === searchValue) {
-              searchResults.push(tableData[i]["Connections"]);
-              break;
-            }
-          }
-        }
-        row["Non-Unique Indirect Connections"] = [row["Territory"], row["Connections"], ...searchResults].join(",");
-      } else {
-        row["Non-Unique Indirect Connections"] = 0
-      }
-
-    // Unique Indirect Connections: Remove duplicate values and Territory from Non-Unique Indirect Connections
-    if (row["Non-Unique Indirect Connections"] === "" || row["Non-Unique Indirect Connections"] === 0) {
-        row["Unique Indirect Connections"] = 0;
-    } else {
-    row["Unique Indirect Connections"] = [...new Set(row["Non-Unique Indirect Connections"].split(","))]
-        .filter((value) => value !== row["Territory"])
-        .join(",");
-    }
-	  
-    // Number of Direct Connections: Count how many comma-separated values are in column Connections
-    if (row["Blizzard"] === 0 && row["Connections"] !== "") {
-      const direct = row["Connections"].split(",");
-      const indirect = row["Unique Indirect Connections"].split(",");
-      row["Number of Direct Connections"] = Math.min(direct.length, 12);
-      row["Number of Indirect Connections"] = indirect.length;
-      row["Number of Cap Connections"] = row["Number of Indirect Connections"] - row["Number of Direct Connections"];
-    } else {
-      row["Number of Direct Connections"] = 0;
-      row["Number of Indirect Connections"] = 0;
-      row["Number of Cap Connections"] = 0;
-    }
-
-	// Add troop values
-	let troopInfo = TroopArray.find(obj => obj.pathId === row.Territory);	
-	if (troopInfo) {
-	  row.Troops = troopInfo.value;
-	}
-
-	  // Check which color array the Territory is in and update the Ownership, Ownership Color, and Ownership Border Color values accordingly
-	  if (whiteNodes.includes(row.Territory)) {
-	    row.Ownership = 'White';
-	    row["Ownership Color"] = "#FFFFFF";
-	    row["Ownership Border Color"] = "#AAAAAA";
-	  } else if (blackNodes.includes(row.Territory)) {
-	    row.Ownership = 'Black';
-	    row["Ownership Color"] = "#000000";
-	    row["Ownership Border Color"] = "#555555";
-	  } else if (redNodes.includes(row.Territory)) {
-	    row.Ownership = 'Red';
-	    row["Ownership Color"] = "#FF0000";
-	    row["Ownership Border Color"] = "#AA0000";
-	  } else if (pinkNodes.includes(row.Territory)) {
-	    row.Ownership = 'Pink';
-	    row["Ownership Color"] = "#FF66FF";
-	    row["Ownership Border Color"] = "#BF4DBF";
-	  } else if (purpleNodes.includes(row.Territory)) {
-	    row.Ownership = 'Purple';
-	    row["Ownership Color"] = "#6F59C7";
-	    row["Ownership Border Color"] = "#4A3B85";
-	  } else if (blueNodes.includes(row.Territory)) {
-	    row.Ownership = 'Blue';
-	    row["Ownership Color"] = "#43A5F4";
-	    row["Ownership Border Color"] = "#3178B1";
-	  } else if (greenNodes.includes(row.Territory)) {
-	    row.Ownership = 'Green';
+	  // zombie color
+	  if (zombieNodes.includes(row.Territory)) {
+	    row.Ownership = 'Zombie';
 	    row["Ownership Color"] = "#33FF33";
 	    row["Ownership Border Color"] = "#20A220";
-	  } else if (yellowNodes.includes(row.Territory)) {
-	    row.Ownership = 'Yellow';
-	    row["Ownership Color"] = "#FFFF00";
-	    row["Ownership Border Color"] = "#D1D100";
-	  } else if (orangeNodes.includes(row.Territory)) {
-	    row.Ownership = 'Orange';
-	    row["Ownership Color"] = "#FFA500";
-	    row["Ownership Border Color"] = "#D18700";
 	  }
   });
 
-  // Call centrality function, line function
-  calculateCentrality(tableData);
-
-	// Columns at this point:
-	// Territory = nodes
-	// Connections = list of direct connections for each node
-	// Blizzard = 1 if blizzard, 0 if not
-	// Pixel Pair 1, Pixel Pair 2 = pixel coordinates
-	// Continent = supernodes
-	// Value = continent bonus troops
-	// Non-Unique Indirect Connections = non-unique list of indirect connections + the node + the direct connections
-	// Unique Indirect Connections = list of unique indirect connections + the direct connections (node value is removed)
-	// Number of Direct Connections = integer
-	// Number of Indirect Connections = integer
-	// Number of Cap Connections = integer number of indirect - number of direct
-	// Betweenness = centrality value
-	// Betweenness Color = the color for that node
-	// Betweenness Border Color = the border color for that node
-	// Closeness = centrality value
-	// Closeness Color = the color for that node
-	// Closeness Border Color = the border color for that node
-	// Eigenvector = centrality value
-	// Eigenvector Color = the color for that node
-	// Eigenvector Border Color = the border color for that node
-	
   // Set font size of indirect connections
   var fontSizeInput = document.getElementById("fontSizeInput");
   fontSizeInput.addEventListener("input", function () {
@@ -1460,9 +678,6 @@ function generateMap() {
         } else if (tableData[i]["Blizzard"] === 1) {
           executeBlizzards(path, svgElement, BlizzardPattern, tableData);
 	}
-	if (tableData[i]["Portal"] === 1) {
-	  executePortals(path, svgElement, tableData);
-	}
 
         // Add text to the specified location from tableData
         if (tableData[i]["Blizzard"] === 0) {
@@ -1486,20 +701,7 @@ function generateMap() {
           text.setAttribute("alignment-baseline", "middle");
           text.setAttribute("font-size", fontSizeInput.value);
           text.setAttribute("font-weight", "bold");
-
-	let condition1 = centralityMenu.value === "standard" && tableData[i]["Number of Direct Connections"] >= 11;
-	let condition2 = centralityMenu.value === "eigenvector" && tableData[i]["Eigenvector Above STDEV"] === 1;
-	let condition3 = centralityMenu.value === "betweenness" && tableData[i]["Betweenness Above STDEV"] === 1;
-	let condition4 = centralityMenu.value === "closeness" && tableData[i]["Closeness Above STDEV"] === 1;
-	let condition5 = centralityMenu.value === "capConnections" && tableData[i]["Number of Cap Connections"] >= 11;
-	let condition6 = centralityMenu.value === "boardstate" && (tableData[i]["Ownership"] === "Black" || tableData[i]["Ownership"] === "Purple");
-		
-	  if (condition1 || condition2 || condition3 || condition4 || condition5 || condition6) {
-	    text.setAttribute("fill", "white");
-	  } else {
-	    text.setAttribute("fill", "black");
-	  }
-		
+	  text.setAttribute("fill", "black");
 	  text.textContent = textContent;
 		
           // Adjust x and y coordinates to position midpoint of text at specified coordinates
@@ -1513,28 +715,10 @@ function generateMap() {
       }
     }
   });
-	// Find the maximum number of direct connections
-	var maxConnections = Math.max(...tableData.map((row) => row["Number of Direct Connections"]));
-	var maxCapConnections = Math.min(12, Math.max(...tableData.map((row) => row["Number of Cap Connections"])));
-
 	// Get the base image element & define base URL
 	var baseImage = document.getElementById("map");
 	var baseURL = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Disconnection-Maps/main/";
-
-	// Decide which image to display
-	if (centralityMenu.value !== "standard" && centralityMenu.value !== "capConnections" && centralityMenu.value !== "boardstate") {
-	    baseImage.src = baseURL + colorLegend + "%20Heatmap.png"
-	} else if (centralityMenu.value === "standard" && maxConnections < 3) {
-	    baseImage.src = baseURL + colorLegend + ".png";
-	} else if (centralityMenu.value === "boardstate") {
-	    baseImage.src = baseURL + colorLegend + ".png";
-	} else if (centralityMenu.value === "capConnections" && maxCapConnections < 3) {
-	    baseImage.src = baseURL + colorLegend + ".png";
-	} else if (centralityMenu.value === "standard" && maxConnections >= 3) {
-	    baseImage.src = baseURL + colorLegend + "%20" + maxConnections + ".png";
-	} else if (centralityMenu.value === "capConnections" && maxCapConnections >= 3) {
-	    baseImage.src = baseURL + colorLegend + "%20" + maxCapConnections + ".png";
-	}
+	baseImage.src = baseURL + colorLegend + ".png";
 	
 // Create a mapping of node names to indices
 let nodeToIndex = {};
@@ -1654,24 +838,6 @@ for (let k = 0; k < indexClone; k++) {
   }
 }
 
-// Check if any pair of portal nodes are within 2 travel distance of each other
-let portalsTooClose = false;
-for (let i = 0; i < portalArray.length; i++) {
-  for (let j = i + 1; j < portalArray.length; j++) {
-    // Get the node names corresponding to indices i and j
-    let node1 = portalArray[i];
-    let node2 = portalArray[j];
-    // Get the indices corresponding to the node names
-    let x = nodeToIndexClone[node1];
-    let y = nodeToIndexClone[node2];
-    // Check if the distance between the nodes is less than or equal to 2
-    if (distClone[x][y] <= 2) {
-      portalsTooClose = true;
-      break;
-    }
-  }
-}
-
   // Check for too-small continents
   let continentCounts = {};
   tableData.forEach(row => {
@@ -1702,18 +868,10 @@ for (let i = 0; i < portalArray.length; i++) {
 	
   // Update invalid text
   var invalidText = document.getElementById("invalidText");
-  if (!allNodesConnected && portalsTooClose && continentTooSmall) {
-    invalidText.textContent = "Invalid Generation: Map disconnected; Portals too close; Continent too small";
-  } else if (!allNodesConnected && portalsTooClose) {
-    invalidText.textContent = "Invalid Generation: Map disconnected; Portals too close";
-  } else if (!allNodesConnected && continentTooSmall) {
+  if (!allNodesConnected && continentTooSmall) {
     invalidText.textContent = "Invalid Generation: Map disconnected; Continent too small";
-  } else if (portalsTooClose && continentTooSmall) {
-    invalidText.textContent = "Invalid Generation: Portals too close; Continent too small";
   } else if (!allNodesConnected) {
     invalidText.textContent = "Invalid Generation: Map is disconnected";
-  } else if (portalsTooClose) {
-    invalidText.textContent = "Invalid Generation: Portals are too close";
   } else if (continentTooSmall) {
     invalidText.textContent = "Invalid Generation: Continent too small";
   } else {
