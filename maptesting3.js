@@ -12,36 +12,43 @@ const mapUrls = {
 	"28_turns_later": {
 		"prettyname": "28 Turns Later",
 		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/28%20Turns%20Later.png",
+		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/28%20Turns%20Later%20blizzard%20pattern.png",
 		"totalBlizzards": 4
 	},
 	"classic": {
 		"prettyname": "Classic",
 		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Classic.png",
+		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Classic%20blizzard%20pattern.png",
 		"totalBlizzards": 3
 	},
 	"classic_frozen": {
 		"prettyname": "Classic Frozen",
 		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Classic%20Frozen.png",
+		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Classic%20Frozen%20blizzard%20pattern.png",
 		"totalBlizzards": 3
 	},
 	"greece": {
 		"prettyname": "Greece",
 		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Greece.png",
+		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Greece%20blizzard%20pattern.png",
 		"totalBlizzards": 6
 	},
 	"italy": {
 		"prettyname": "Italy",
 		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Italy.png",
+		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Italy%20blizzard%20pattern.png",
 		"totalBlizzards": 2
 	},
 	"orbital_objectives": {
 		"prettyname": "Orbital Objectives",
-		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Orbital%20Objectives%20.png",
+		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Orbital%20Objectives.png",
+		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/Orbital%20Objectives%20blizzard%20pattern.png",
 		"totalBlizzards": 4
 	},
 	"united_states": {
 		"prettyname": "United States",
 		"baseurl": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States.png",
+		"blizzardPatternImage": "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/United%20States%20blizzard%20pattern.png",
 		"totalBlizzards": 3
 	},
 }
