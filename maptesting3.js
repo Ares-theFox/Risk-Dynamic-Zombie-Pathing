@@ -6,7 +6,7 @@ if (urlParams.has('map')) {
 	console.log(urlParams.get('map'));
 }
 
-console.log("aaa")
+console.log("element")
 
 const mapUrls = {
 	"28_turns_later": {
@@ -740,7 +740,6 @@ function generateMap() {
 function drawArrow(ctx, startX, startY, endX, endY, fillColor, borderColor) {
     // Draw the border
     drawLineAndArrowhead(ctx, startX, startY, endX, endY, borderColor, 4);
-
     // Draw the fill
     drawLineAndArrowhead(ctx, startX, startY, endX, endY, fillColor, 2);
 }
@@ -797,23 +796,38 @@ baseImage.onload = function() {
   // Set the line width
   ctx.lineWidth = 2; // Add this line to set the line width
 
-  // Calculate the start and end points for the red arrow
-  var startX1 = 865 - (865 - 648) * 0.1;
-  var startY1 = 601 - (601 - 87) * 0.1;
-  var endX1 = 648 + (865 - 648) * 0.1;
-  var endY1 = 87 + (601 - 87) * 0.1;
+// Iterate over the table data
+tableData.forEach(function(row) {
+  // Get the territory's pixel coordinates
+  var startX = parseInt(row['Pixel Pair 1']);
+  var startY = parseInt(row['Pixel Pair 2']);
 
-  // Draw a red arrow
-  drawArrow(ctx, startX1, startY1, endX1, endY1, 'red', 'white');
+  // Get the list of connections
+  var connections = row['Connections'].split(',');
 
-   // Calculate the start and end points for the blue arrow with a slight perpendicular offset
-   var startX2 = endX1 + 10
-   var startY2 = endY1 + 10
-   var endX2 = startX1 + 10
-   var endY2 = startY1 + 10
+  // Limit the number of connections to 6
+  connections = connections.slice(0, 6);
 
-   // Draw a blue arrow
-   drawArrow(ctx, startX2, startY2, endX2, endY2, 'aqua', 'black');
+  // Iterate over the connections
+  connections.forEach(function(connection, index) {
+    // Find the row for the connection
+    var connectionRow = tableData.find(function(row) {
+      return row['Territory'] === connection;
+    });
+
+    if (connectionRow) {
+      // Get the connection's pixel coordinates
+      var endX = parseInt(connectionRow['Pixel Pair 1']);
+      var endY = parseInt(connectionRow['Pixel Pair 2']);
+
+      // Calculate the offset based on the index of the connection
+      var offset = index * 14 - (connections.length - 1) * 7;
+
+      // Draw an arrow from the territory to the connection
+      drawArrow(ctx, startX + offset, startY + offset, endX + offset, endY + offset, colorDictionary[index + 1], colorDarktionary[index + 1]);
+    }
+  });
+});
 };
 	
 	
