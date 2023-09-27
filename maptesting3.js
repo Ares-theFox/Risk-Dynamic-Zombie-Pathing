@@ -6,7 +6,7 @@ if (urlParams.has('map')) {
 	console.log(urlParams.get('map'));
 }
 
-console.log("5555")
+console.log("95818")
 
 const mapUrls = {
 	"28_turns_later": {
@@ -737,6 +737,32 @@ function generateMap() {
 	baseImage.src = baseURL + colorLegend + ".png";
 
 // NEW CANVAS ELEMENT
+function drawArrow(ctx, startX, startY, endX, endY, color) {
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(endX, endY);
+    ctx.strokeStyle = color;
+    ctx.stroke();
+
+    var headlen = 10; // length of head in pixels
+    var dx = endX - startX;
+    var dy = endY - startY;
+    var angle = Math.atan2(dy, dx);
+
+    ctx.beginPath();
+    ctx.moveTo(endX, endY);
+    ctx.lineTo(endX - headlen * Math.cos(angle - Math.PI / 6), endY - headlen * Math.sin(angle - Math.PI / 6));
+    ctx.lineTo(endX - headlen * Math.cos(angle + Math.PI / 6), endY - headlen * Math.sin(angle + Math.PI / 6));
+  
+    ctx.closePath();
+  
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+  
+    ctx.stroke();
+    ctx.fill();
+}
+	
 // Remove all existing canvas elements
 var existingCanvases = document.getElementsByTagName('canvas');
 while(existingCanvases[0]) {
@@ -762,34 +788,25 @@ baseImage.onload = function() {
   // Set the line width
   ctx.lineWidth = 2; // Add this line to set the line width
 
-  // Draw a red line
-  ctx.beginPath();
-  ctx.moveTo(865, 601);
-  ctx.lineTo(648, 87);
-  ctx.strokeStyle = 'red';
-  ctx.stroke();
+  // Calculate the start and end points for the red arrow
+  var startX1 = 865 - (865 - 648) * 0.1;
+  var startY1 = 601 - (601 - 87) * 0.1;
+  var endX1 = 648 + (865 - 648) * 0.1;
+  var endY1 = 87 + (601 - 87) * 0.1;
 
-  // Draw the arrowhead
-  var headlen = 10; // length of head in pixels
-  var dx = 648 - 865;
-  var dy = 87 - 601;
-  var angle = Math.atan2(dy, dx);
-  
-  ctx.beginPath();
-  ctx.moveTo(648, 87);
-  ctx.lineTo(648 - headlen * Math.cos(angle - Math.PI / 6), 87 - headlen * Math.sin(angle - Math.PI / 6));
-  ctx.lineTo(648 - headlen * Math.cos(angle + Math.PI / 6), 87 - headlen * Math.sin(angle + Math.PI / 6));
-  
-  ctx.closePath();
-  
-  ctx.strokeStyle = 'red';
-  
-  ctx.stroke();
-  
-   // Fill the arrowhead with red
-   ctx.fillStyle = 'red';
-   ctx.fill();
+  // Draw a red arrow
+  drawArrow(ctx, startX1, startY1, endX1, endY1, 'red');
+
+  // Calculate the start and end points for the blue arrow with a slight perpendicular offset
+  var startX2 = endX1 + (endY1 - startY1) * 0.05;
+  var startY2 = endY1 - (endX1 - startX1) * 0.05;
+  var endX2 = startX1 + (startY2 - endY2) * 0.05;
+  var endY2 = startY1 - (startX2 - endX2) * 0.05;
+
+   // Draw a blue arrow
+   drawArrow(ctx, startX2, startY2, endX2, endY2, 'blue');
 };
+	
 	
 	
 	
