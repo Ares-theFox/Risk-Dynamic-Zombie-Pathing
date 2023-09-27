@@ -6,7 +6,7 @@ if (urlParams.has('map')) {
 	console.log(urlParams.get('map'));
 }
 
-console.log("1234")
+console.log("4312")
 
 const mapUrls = {
 	"28_turns_later": {
@@ -737,11 +737,6 @@ function generateMap() {
 	baseImage.src = baseURL + colorLegend + ".png";
 
 // NEW CANVAS ELEMENT
-// Get the base image element & define base URL
-var baseImage = document.getElementById("map");
-var baseURL = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/";
-baseImage.src = baseURL + colorLegend + ".png";
-
 // Remove all existing canvas elements
 var existingCanvases = document.getElementsByTagName('canvas');
 while(existingCanvases[0]) {
@@ -779,10 +774,20 @@ baseImage.onload = function() {
   var dx = 648 - 865;
   var dy = 87 - 601;
   var angle = Math.atan2(dy, dx);
-  ctx.lineTo(648 - headlen * Math.cos(angle - Math.PI / 6), 87 - headlen * Math.sin(angle - Math.PI / 6));
+  
+  ctx.beginPath();
   ctx.moveTo(648, 87);
+  ctx.lineTo(648 - headlen * Math.cos(angle - Math.PI / 6), 87 - headlen * Math.sin(angle - Math.PI / 6));
   ctx.lineTo(648 - headlen * Math.cos(angle + Math.PI / 6), 87 - headlen * Math.sin(angle + Math.PI / 6));
+  
+  ctx.closePath();
+  
+  ctx.strokeStyle = 'red';
+  
+  ctx.stroke();
+  
 };
+
 
 	
 	
