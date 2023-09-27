@@ -6,7 +6,7 @@ if (urlParams.has('map')) {
 	console.log(urlParams.get('map'));
 }
 
-console.log("3rwr33wr")
+console.log("latest")
 
 const mapUrls = {
 	"28_turns_later": {
@@ -798,6 +798,9 @@ baseImage.onload = function() {
   // Set the line width
   ctx.lineWidth = 2; // Add this line to set the line width
 
+// Create an object to store the connections
+var connectionsMade = {};
+	
 // Iterate over the table data
 tableData.forEach(function(row) {
   // Get the territory's pixel coordinates
@@ -822,11 +825,28 @@ tableData.forEach(function(row) {
       var endX = parseInt(connectionRow['Pixel Pair 1']);
       var endY = parseInt(connectionRow['Pixel Pair 2']);
 
-      // Calculate the offset based on the index of the connection
-      var offset = index * 14 - (connections.length - 1) * 7;
+      var dx = endX - startX;
+      var dy = endY - startY;
+      var length = Math.sqrt(dx * dx + dy * dy);
+      var reduction = length * 0.1; // Length to reduce on each side
+
+      // Calculate new start and end points
+      var newStartX = startX + dx / length * reduction;
+      var newStartY = startY + dy / length * reduction;
+      var newEndX = endX - dx / length * reduction;
+      var newEndY = endY - dy / length * reduction;
+
+      // Create a string to represent the connection
+      var connectionPair = [row['Territory'], connection].sort().join('-');
+
+      // Get the number of connections already made between these nodes
+      var numConnections = connectionsMade[connectionPair] || 0;
+
+      // Calculate the offset based on the number of connections
+      var offset = numConnections * 14 - (numConnections - 1) * 7;
 
       // Draw an arrow from the territory to the connection
-      drawArrow(ctx, startX + offset, startY + offset, endX + offset, endY + offset, colorDictionary[index + 1], colorDarktionary[index + 1]);
+      drawArrow(ctx, newStartX + offset, newStartY + offset, newEndX + offset, newEndY + offset, colorDictionary[index + 1], colorDarktionary[index + 1]);
     }
   });
 });
