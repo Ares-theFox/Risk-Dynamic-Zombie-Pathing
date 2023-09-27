@@ -6,7 +6,7 @@ if (urlParams.has('map')) {
 	console.log(urlParams.get('map'));
 }
 
-console.log("3333")
+console.log("line")
 
 const mapUrls = {
 	"28_turns_later": {
@@ -118,6 +118,22 @@ var totalBlizzards = mapUrls[mapselected].totalBlizzards;
 let blizzardArray = [];
 let history = [];
 let zombieNodes = [];
+const colorDictionary = {
+  1: "#ff0000",
+  2: "#18c500",
+  3: "#006cff",
+  4: "#ffff00",
+  5: "#ffffff",
+  6: "#000000"
+};
+const colorDarktionary = {
+ 1: "#000000",
+ 2: "#000000",
+ 3: "#000000",
+ 4: "#000000",
+ 5: "#000000",
+ 6: "#ffffff"
+};
 
 // Button functions
 function button_AddBlizzards() {
@@ -719,6 +735,34 @@ function generateMap() {
 	var baseImage = document.getElementById("map");
 	var baseURL = "https://raw.githubusercontent.com/Ares-theFox/Risk-Dynamic-Zombie-Pathing/main/";
 	baseImage.src = baseURL + colorLegend + ".png";
+
+// NEW CANVAS ELEMENT
+// Create a new canvas element
+var canvas = document.createElement('canvas');
+canvas.id = 'myCanvas';
+canvas.style.position = 'absolute';
+canvas.style.zIndex = 1000; // Ensure the canvas is on top
+document.body.appendChild(canvas);
+
+baseImage.onload = function() {
+  // Set the canvas dimensions to match the image
+  canvas.width = baseImage.width;
+  canvas.height = baseImage.height;
+
+  // Get a context to draw on
+  var ctx = canvas.getContext('2d');
+
+  // Draw a red line
+  ctx.beginPath();
+  ctx.moveTo(865, 601);
+  ctx.lineTo(648, 87);
+  ctx.strokeStyle = 'red';
+  ctx.stroke();
+};
+
+
+	
+	
 	
 // Create a mapping of node names to indices
 let nodeToIndex = {};
