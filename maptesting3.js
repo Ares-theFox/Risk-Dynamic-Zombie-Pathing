@@ -6,7 +6,7 @@ if (urlParams.has('map')) {
 	console.log(urlParams.get('map'));
 }
 
-console.log("ffffffffffffff")
+console.log("gggggggggggg")
 
 const mapUrls = {
 	"28_turns_later": {
@@ -798,10 +798,10 @@ baseImage.onload = function() {
   drawArrow(ctx, startX1, startY1, endX1, endY1, 'red');
 
    // Calculate the start and end points for the blue arrow with a slight perpendicular offset
-   var startX2 = startX1 * 0.05;
-   var startY2 = startY1 * 0.05;
-   var endX2 = endX1 * 0.05;
-   var endY2 = endY1 * 0.05;
+   var startX2 = endX1 + 10
+   var startY2 = endY1 + 10
+   var endX2 = startX1 + 10
+   var endY2 = startY1 + 10
 
    // Draw a blue arrow
    drawArrow(ctx, startX2, startY2, endX2, endY2, 'blue');
