@@ -6,7 +6,7 @@ if (urlParams.has('map')) {
 	console.log(urlParams.get('map'));
 }
 
-console.log("eee")
+console.log("wwww")
 
 const mapUrls = {
 	"28_turns_later": {
@@ -227,6 +227,15 @@ xhr.onload = function () {
   }
 };
 xhr.send();
+
+// Get the select element
+var prioritySelection = document.getElementById('prioritySelection');
+
+// Add an event listener for the change event
+prioritySelection.addEventListener('change', function() {
+  // Call the generateMap function
+  generateMap();
+});
 
 // Function to update button text
 function updateButtonText() {
@@ -787,6 +796,34 @@ canvas.style.zIndex = 1000; // Ensure the canvas is on top
 canvas.style.pointerEvents = 'none'; // Add this line to make the canvas clickable
 document.body.appendChild(canvas);
 
+  // Get the selected value
+  var selectedValue = prioritySelection.value;
+
+  // Determine the maximum index based on the selected value
+  var maxIndex;
+  switch (selectedValue) {
+    case 'primary':
+      maxIndex = 0;
+      break;
+    case 'secondary':
+      maxIndex = 1;
+      break;
+    case 'tertiary':
+      maxIndex = 2;
+      break;
+    case 'quaternary':
+      maxIndex = 3;
+      break;
+    case 'quinary':
+      maxIndex = 4;
+      break;
+    case 'senary':
+      maxIndex = 5;
+      break;
+    default:
+      maxIndex = 0;
+  }
+
 baseImage.onload = function() {
   // Set the canvas dimensions to match the image
   canvas.width = baseImage.width;
@@ -851,8 +888,10 @@ tableData.forEach(function(row) {
       }
 
       // Draw an arrow from the territory to the connection
-      drawArrow(ctx, newStartX + offset, newStartY + offset, newEndX + offset, newEndY + offset, colorDictionary[index + 1], colorDarktionary[index + 1]);
-
+	if (index <= maxIndex) {
+	    drawArrow(ctx, newStartX + offset, newStartY + offset, newEndX + offset, newEndY + offset, colorDictionary[index + 1], colorDarktionary[index + 1]);
+	}
+	    
       // Increment the number of connections between these nodes
       connectionsMade[connectionPair] = numConnections + 1;
     }
