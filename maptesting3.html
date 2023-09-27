@@ -28,7 +28,18 @@
   <button id="undoButton" onclick="button_Undo()">Undo</button>
   <button id="resetButton">Reset Map</button>
   <button id="mapDirectoryButton">Map Directory</button>
-</div>	  
+</div>
+  <div id="priorityContainer" style="display: inline-block;">
+    <label for="prioritySelection">Show Priorities:</label>
+    <select id="prioritySelection" name="prioritySelection">
+      <option value="primary">1</option>
+      <option value="secondary">1-2</option>
+      <option value="tertiary">1-3</option>
+      <option value="quaternary">1-4</option>
+      <option value="quinary">1-5</option>
+      <option value="senary">1-6</option>
+    </select>
+  </div>
     <img id="map" src=""/>
     <div id="range"></div>
     <script src="maptesting3.js"></script>
