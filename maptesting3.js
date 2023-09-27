@@ -6,7 +6,7 @@ if (urlParams.has('map')) {
 	console.log(urlParams.get('map'));
 }
 
-console.log("element")
+console.log("3rwr33wr")
 
 const mapUrls = {
 	"28_turns_later": {
@@ -215,6 +215,8 @@ xhr.onload = function () {
     var rangeElement = document.getElementById("range");
     rangeElement.innerHTML = svg;
     svgElement = rangeElement.querySelector("svg");
+    svgElement.style.position = 'absolute';
+    svgElement.style.zIndex = 999;
     paths = svgElement.querySelectorAll("path");
     paths.forEach(function (path) {
       path.setAttribute("fill", "transparent");
