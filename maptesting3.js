@@ -6,7 +6,7 @@ if (urlParams.has('map')) {
 	console.log(urlParams.get('map'));
 }
 
-console.log("4312")
+console.log("5555")
 
 const mapUrls = {
 	"28_turns_later": {
@@ -786,9 +786,10 @@ baseImage.onload = function() {
   
   ctx.stroke();
   
+   // Fill the arrowhead with red
+   ctx.fillStyle = 'red';
+   ctx.fill();
 };
-
-
 	
 	
 	
