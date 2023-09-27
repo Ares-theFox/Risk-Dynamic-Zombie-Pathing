@@ -6,7 +6,7 @@ if (urlParams.has('map')) {
 	console.log(urlParams.get('map'));
 }
 
-console.log("latest")
+console.log("eee")
 
 const mapUrls = {
 	"28_turns_later": {
@@ -843,10 +843,18 @@ tableData.forEach(function(row) {
       var numConnections = connectionsMade[connectionPair] || 0;
 
       // Calculate the offset based on the number of connections
-      var offset = numConnections * 14 - (numConnections - 1) * 7;
+      var offset;
+      if (numConnections % 2 === 0) {
+        offset = numConnections / 2 * 14;
+      } else {
+        offset = -(numConnections + 1) / 2 * 14;
+      }
 
       // Draw an arrow from the territory to the connection
       drawArrow(ctx, newStartX + offset, newStartY + offset, newEndX + offset, newEndY + offset, colorDictionary[index + 1], colorDarktionary[index + 1]);
+
+      // Increment the number of connections between these nodes
+      connectionsMade[connectionPair] = numConnections + 1;
     }
   });
 });
