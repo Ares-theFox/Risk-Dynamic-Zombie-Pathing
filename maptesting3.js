@@ -6,7 +6,7 @@ if (urlParams.has('map')) {
 	console.log(urlParams.get('map'));
 }
 
-console.log("gggggggggggg")
+console.log("aaa")
 
 const mapUrls = {
 	"28_turns_later": {
@@ -737,11 +737,20 @@ function generateMap() {
 	baseImage.src = baseURL + colorLegend + ".png";
 
 // NEW CANVAS ELEMENT
-function drawArrow(ctx, startX, startY, endX, endY, color) {
+function drawArrow(ctx, startX, startY, endX, endY, fillColor, borderColor) {
+    // Draw the border
+    drawLineAndArrowhead(ctx, startX, startY, endX, endY, borderColor, 4);
+
+    // Draw the fill
+    drawLineAndArrowhead(ctx, startX, startY, endX, endY, fillColor, 2);
+}
+
+function drawLineAndArrowhead(ctx, startX, startY, endX, endY, color, lineWidth) {
     ctx.beginPath();
     ctx.moveTo(startX, startY);
     ctx.lineTo(endX, endY);
     ctx.strokeStyle = color;
+    ctx.lineWidth = lineWidth;
     ctx.stroke();
 
     var headlen = 10; // length of head in pixels
@@ -753,12 +762,12 @@ function drawArrow(ctx, startX, startY, endX, endY, color) {
     ctx.moveTo(endX, endY);
     ctx.lineTo(endX - headlen * Math.cos(angle - Math.PI / 6), endY - headlen * Math.sin(angle - Math.PI / 6));
     ctx.lineTo(endX - headlen * Math.cos(angle + Math.PI / 6), endY - headlen * Math.sin(angle + Math.PI / 6));
-  
+
     ctx.closePath();
-  
+
     ctx.strokeStyle = color;
     ctx.fillStyle = color;
-  
+
     ctx.stroke();
     ctx.fill();
 }
@@ -795,7 +804,7 @@ baseImage.onload = function() {
   var endY1 = 87 + (601 - 87) * 0.1;
 
   // Draw a red arrow
-  drawArrow(ctx, startX1, startY1, endX1, endY1, 'red');
+  drawArrow(ctx, startX1, startY1, endX1, endY1, 'red', 'white');
 
    // Calculate the start and end points for the blue arrow with a slight perpendicular offset
    var startX2 = endX1 + 10
@@ -804,12 +813,8 @@ baseImage.onload = function() {
    var endY2 = startY1 + 10
 
    // Draw a blue arrow
-   drawArrow(ctx, startX2, startY2, endX2, endY2, 'blue');
+   drawArrow(ctx, startX2, startY2, endX2, endY2, 'aqua', 'black');
 };
-
-
-	
-	
 	
 	
 // Create a mapping of node names to indices
